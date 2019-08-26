@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import './App.css';
+import get from 'lodash/get';
 
 import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Form from 'react-bootstrap/Form';
+import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
+import Button from 'react-bootstrap/Button';  
 
 
 class User {} // TODO
@@ -14,7 +17,7 @@ class _TRIGGER_FIELD {
   static readonly value: any;
 }
 
-class _USER_IDENTIFIER_FIELD extends _TRIGGER_FIELD {
+class _FIELD_USER_IDENTIFIER extends _TRIGGER_FIELD {
   static readonly type: 'userId' | 'phoneNumber' | 'emailAddress';
   static readonly value: string;
   static readonly userModel?: User;
@@ -23,11 +26,11 @@ class _USER_IDENTIFIER_FIELD extends _TRIGGER_FIELD {
   getOrCreateUser() {} // TODO
 }
 
-class FIELD_PHONE_NUMBER extends _USER_IDENTIFIER_FIELD {
+class FIELD_PHONE_NUMBER extends _FIELD_USER_IDENTIFIER {
   type = 'phoneNumber';
 }
 
-class FIELD_EMAIL_ADDRESS extends _USER_IDENTIFIER_FIELD {
+class FIELD_EMAIL_ADDRESS extends _FIELD_USER_IDENTIFIER {
   type = 'emailAddress';
 }
 
@@ -41,10 +44,15 @@ class FIELD_TEXT_LABEL extends _TRIGGER_FIELD {
   static readonly value: string;
 }
 
-class BLOB_FIELD extends _TRIGGER_FIELD {
+class FIELD_BLOB extends _TRIGGER_FIELD {
   type = 'blob';
   static readonly mimeType: 'image/jpeg' | 'image/png';
   static readonly value: string;
+}
+
+class FIELD_TIMESTAMP_MS extends _TRIGGER_FIELD {
+  type = 'timestampMs';
+  static readonly value: number;
 }
 
 class _OBJECT_TYPE {}
@@ -53,7 +61,7 @@ class SMS implements _OBJECT_TYPE {
   static readonly toPhoneNumber: FIELD_PHONE_NUMBER;
   static readonly fromPhoneNumber: FIELD_PHONE_NUMBER;
   static readonly messageText: FIELD_TEXT_FREE;
-  static readonly messageBlob?: BLOB_FIELD;
+  static readonly messageBlob?: FIELD_BLOB;
 }
 
 class VOICE_CALL implements _OBJECT_TYPE {
@@ -78,7 +86,19 @@ class COMMIT implements _OBJECT_TYPE {
   static readonly sha: FIELD_TEXT_LABEL;
 }
 
+class CALENDAR_EVENT implements _OBJECT_TYPE {
+  static readonly eventName: FIELD_TEXT_FREE;
+  static readonly eventDescription: FIELD_TEXT_FREE;
+  static readonly startTimestampMS: FIELD_TIMESTAMP_MS;
+  static readonly endTimestampMs: FIELD_TIMESTAMP_MS;
+}
+
 interface _TRIGGER {
+  readonly displayName: string;
+  readonly type: _OBJECT_TYPE;
+}
+
+interface _ACTION {
   readonly displayName: string;
   readonly type: _OBJECT_TYPE;
 }
@@ -108,13 +128,33 @@ class TRIGGERS {
     displayName: 'Git Branch Updated',
     type: COMMIT,
   };
+  static readonly calendarEventStarted: _TRIGGER = {
+    displayName: 'Calendar Event Started',
+    type: CALENDAR_EVENT,
+  }
 }
 
 class ACTIONS {
-  static readonly sms: string = 'Respond SMS';
-  static readonly voice: string = 'Make Phone Call';
-  static readonly login: string = 'Log in User';
-  static readonly userUpdate: string = 'Update User Property';
+  static readonly smsSend: _ACTION = {
+    displayName: 'Send SMS',
+    type: SMS,
+  }
+}
+
+class _TRIGGER_FILTER {
+  static readonly onField: _TRIGGER_FIELD;
+  static readonly filters: _TRIGGER_FILTER[];
+  static readonly actions: _TRIGGER_ACTION[];
+}
+
+class _TRIGGER_ACTION {
+  static readonly type: _ACTION;
+}
+
+class STATE {
+  static readonly trigger: _TRIGGER;
+  static readonly filters: _TRIGGER_FILTER[] = [];
+  static readonly actions: _TRIGGER_ACTION[] = [];
 }
 
 
@@ -147,6 +187,10 @@ const App: React.FC = () => {
               </Form.Label>
                 <Form.Control plaintext readOnly size="lg" defaultValue={ triggerName } />
             </Form.Group>
+            <ButtonToolbar>
+              <Button variant="primary">Add Filter</Button>
+              <Button variant="secondary">Add Action</Button>
+            </ButtonToolbar>
           </Form>
           </Col>
         </Row>
