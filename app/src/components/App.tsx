@@ -5,8 +5,8 @@ import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 
-import Trigger from './Trigger';
-import RECIPE from '../constants/recipe';
+import Recipe from './recipe/Recipe';
+import RECIPE from '../constants/recipe_constants';
 
 interface _STATE {
     recipe?: RECIPE;
@@ -15,11 +15,13 @@ const STATE: _STATE = {};
 
 
 const App: React.FC = () => {
+    const [recipe, setRecipeState] = useState<RECIPE>(new RECIPE());
+    recipe.onUpdate = setRecipeState;
     return (
         <Container className="App">
             <Row>
                 <Col>
-                    <Trigger />
+                    <Recipe recipe={ recipe } />
                 </Col>
             </Row>
         </Container>

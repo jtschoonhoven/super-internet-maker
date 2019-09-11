@@ -1,5 +1,5 @@
-import { BASE_EVENT, SMS } from './events';
-import { BASE_FIELD } from './fields';
+import { BASE_EVENT, SMS } from './events_constants';
+import { BASE_FIELD } from './fields_constants';
 
 
 export interface BASE_ACTION {

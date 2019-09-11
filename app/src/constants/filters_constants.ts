@@ -1,5 +1,9 @@
-export interface BASE_FILTER {
+export class BASE_FILTER {
     readonly displayName: string;
+
+    constructor({ displayName }: BASE_FILTER) {
+        this.displayName = displayName;
+    }
 }
 
 interface _FILTERS {
