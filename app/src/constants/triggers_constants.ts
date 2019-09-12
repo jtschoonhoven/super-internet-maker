@@ -13,7 +13,7 @@ import { BASE_FIELD } from './fields_constants';
 import { BASE_ACTION } from './actions_constants';
 
 type _UUID_MAP = { [uuid: string]: TRIGGER_FILTER };
-const TRIGGERS: {[name: string]: typeof BASE_TRIGGER} = {};
+const TRIGGERS: { [name: string]: typeof BASE_TRIGGER } = {};
 export default TRIGGERS;
 
 export class TRIGGER_FILTER {
@@ -23,7 +23,7 @@ export class TRIGGER_FILTER {
     readonly actions: TRIGGER_ACTION_GROUP;
     readonly parent: TRIGGER_FILTER_GROUP;
 
-    constructor ({ type, onField, filters, actions, parent }: TRIGGER_FILTER) {
+    constructor({ type, onField, filters, actions, parent }: TRIGGER_FILTER) {
         this.type = type;
         this.onField = onField;
         this.filters = filters;
@@ -36,10 +36,10 @@ export class TRIGGER_FILTER_GROUP {
     readonly and: _UUID_MAP;
     readonly or: _UUID_MAP;
     readonly parent: BASE_TRIGGER | TRIGGER_FILTER_GROUP;
-    
+
     constructor(
         { and, or, parent }:
-        { and?: _UUID_MAP, or?: _UUID_MAP, parent: BASE_TRIGGER | TRIGGER_FILTER_GROUP },
+            { and?: _UUID_MAP, or?: _UUID_MAP, parent: BASE_TRIGGER | TRIGGER_FILTER_GROUP },
     ) {
         this.and = and || {};
         this.or = or || {};
@@ -50,7 +50,7 @@ export class TRIGGER_FILTER_GROUP {
 export class TRIGGER_ACTION {
     readonly type: BASE_ACTION;
 
-    constructor ({ type }: TRIGGER_ACTION) {
+    constructor({ type }: TRIGGER_ACTION) {
         this.type = type;
     }
 }
@@ -68,7 +68,7 @@ export class TRIGGER_ACTION_GROUP {
 interface _BASE_TRIGGER {
     readonly label: string;
     readonly displayName: string;
-    readonly type: BASE_EVENT;
+    readonly type: typeof BASE_EVENT;
     readonly parent: RECIPE;
     readonly filters: TRIGGER_FILTER_GROUP;
     readonly actions: TRIGGER_ACTION[];
@@ -77,11 +77,11 @@ interface _BASE_TRIGGER {
 export class BASE_TRIGGER implements _BASE_TRIGGER {
     static readonly label: string;
     static readonly displayName: string;
-    static readonly type: BASE_EVENT;
+    static readonly type: typeof BASE_EVENT;
     // instance props match static props
     readonly label: string;
     readonly displayName: string;
-    readonly type: BASE_EVENT;
+    readonly type: typeof BASE_EVENT;
     readonly parent: RECIPE;
     readonly filters: TRIGGER_FILTER_GROUP;
     readonly actions: TRIGGER_ACTION[];
@@ -89,7 +89,7 @@ export class BASE_TRIGGER implements _BASE_TRIGGER {
     // assign instance props from static props
     constructor(
         { parent, filters, actions }:
-        { parent: RECIPE, filters?: TRIGGER_FILTER_GROUP, actions?: TRIGGER_ACTION[] },
+            { parent: RECIPE, filters?: TRIGGER_FILTER_GROUP, actions?: TRIGGER_ACTION[] },
     ) {
         this.label = (this.constructor as typeof BASE_TRIGGER).label;
         this.displayName = (this.constructor as typeof BASE_TRIGGER).displayName;
