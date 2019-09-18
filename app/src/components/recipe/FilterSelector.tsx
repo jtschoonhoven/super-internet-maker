@@ -1,21 +1,30 @@
-import React from 'react';
-import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Dropdown from 'react-bootstrap/Dropdown';
-import { BASE_TRIGGER } from '../../constants/triggers_constants';
-import { BASE_EVENT, EVENT_FIELD_LABEL } from '../../constants/events_constants';
+import Form from 'react-bootstrap/Form';
 import get from 'lodash/get';
+import React from 'react';
+
+import { BASE_EVENT, EVENT_FIELD_LABEL } from '../../constants/events_constants';
 import { BASE_FIELD } from '../../constants/fields_constants';
+import { BASE_TRIGGER, TRIGGER_FILTER, TRIGGER_FILTER_GROUP } from '../../constants/triggers_constants';
+import { BASE_FILTER } from '../../constants/filters_constants';
 
 interface STATE {
     trigger: BASE_TRIGGER;
 }
 
-function onSelectFilter(trigger: BASE_TRIGGER, fieldName: string): void {
+function onAddFilter(filterGroup: TRIGGER_FILTER_GROUP, fieldName: string): void {
+    const trigger = filterGroup.getParentTrigger();
     const Event = (trigger.type as typeof BASE_EVENT);
     const FieldLabel: EVENT_FIELD_LABEL<typeof BASE_FIELD> = get(Event, fieldName);
     const Field = FieldLabel.field;
-    console.log(`You selected ${ FieldLabel.displayName } on type ${ Field.displayName }`)
+    console.log(`You selected ${ FieldLabel.displayName } on type ${ Field.displayName }`);
+    const newFilter = new TRIGGER_FILTER({
+        type: new BASE_FILTER({ displayName: 'TODO' }),
+        onField: Field,
+        parent: filterGroup,
+    });
+    filterGroup.addFilter({ filter: newFilter });
 }
 
 const FilterSelector: React.FC<STATE> = ({ trigger }) => {
@@ -28,7 +37,7 @@ const FilterSelector: React.FC<STATE> = ({ trigger }) => {
     });
     return (
         <Form>
-            <Dropdown onSelect={ (fieldName: string): void => { onSelectFilter(trigger, fieldName) } }>
+            <Dropdown onSelect={ (fieldName: string): void => { onAddFilter(trigger.filterGroup, fieldName) } }>
                 <Dropdown.Toggle variant="success" id="dropdown-basic">
                     Add Filter
                 </Dropdown.Toggle>

@@ -15,7 +15,7 @@ const Trigger: React.FC<STATE> = ({ trigger }) => {
   }
   return (
     <div>
-      <FilterGroup filters={ trigger.filters } />
+      <FilterGroup filterGroup={ trigger.filterGroup } />
       <FilterSelector trigger={ trigger } />
     </div>
   );

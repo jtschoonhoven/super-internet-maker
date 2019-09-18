@@ -3,20 +3,16 @@ import { TRIGGER_FILTER_GROUP } from '../../constants/triggers_constants';
 import Filter from './Filter';
 
 interface STATE {
-    filters: TRIGGER_FILTER_GROUP;
+    filterGroup: TRIGGER_FILTER_GROUP;
 }
 
-const FilterGroup: React.FC<STATE> = ({ filters }) => {
-    const FiltersLogicalAnd = Object.entries(filters.and).map(([uuid, filter]) => {
-        return <Filter filter={ filter } key={ uuid }></Filter>
-    });
-    const FiltersLogicalOr = Object.entries(filters.or).map(([uuid, filter]) => {
-        return <Filter filter={ filter } key={ uuid }></Filter>
+const FilterGroup: React.FC<STATE> = ({ filterGroup }) => {
+    const Filters = filterGroup.filters.map((filter, index) => {
+        return <Filter filter={ filter } key={ index }></Filter>
     });
     return (
         <div>
-            { FiltersLogicalAnd }
-            { FiltersLogicalOr }
+            { Filters }
         </div>
     );
 }

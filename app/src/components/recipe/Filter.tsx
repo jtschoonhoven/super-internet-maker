@@ -1,11 +1,18 @@
 import React from 'react';
-import { TRIGGER_FILTER } from '../../constants/triggers_constants';
+import { TRIGGER_FILTER, TRIGGER_FILTER_GROUP } from '../../constants/triggers_constants';
 
 interface STATE {
-    filter: TRIGGER_FILTER;
+    filter: TRIGGER_FILTER | TRIGGER_FILTER_GROUP;
 };
 
 const Filter: React.FC<STATE> = ({ filter }) => {
-    return <p>i is a filter</p>;
+    console.log('FILTER:');
+    console.log(filter);
+    if (filter instanceof TRIGGER_FILTER) {
+        return (<p>i is a filter on { filter.onField.displayName } of type { filter.type.displayName } </p>);
+    }
+    else {
+        return (<p>i is a filter group</p>);
+    }
 }
 export default Filter;
