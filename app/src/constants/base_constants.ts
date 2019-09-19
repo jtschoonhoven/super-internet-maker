@@ -1,4 +1,6 @@
 import uuidv4 from 'uuid/v4';
+import get from 'lodash/get';
+import isPlainObject from 'lodash/isPlainObject';
 import { BASE_TRIGGER } from './triggers_constants';
 
 export default abstract class SIM_BASE {
@@ -7,6 +9,26 @@ export default abstract class SIM_BASE {
 
     constructor() {
         this._uuid = uuidv4();
+        // hackily update the parent prop on any children (including collections of children)
+        Object.values(this).forEach((child) => {
+            if (child instanceof SIM_BASE) {
+                child.parent = this;
+            }
+            else if (child instanceof Array) {
+                child.forEach((grandChild) => {
+                    if (grandChild instanceof SIM_BASE) {
+                        grandChild.parent = this;
+                    }
+                });
+            }
+            else if (isPlainObject(child)) {
+                Object.values(child).forEach((grandChild) => {
+                    if (grandChild instanceof SIM_BASE) {
+                        grandChild.parent = this;
+                    }
+                });
+            }
+        });
     }
 
     getParentTrigger(): BASE_TRIGGER {

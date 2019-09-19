@@ -13,7 +13,7 @@ function onSelectTrigger(recipe: RECIPE, triggerName: string | undefined): void 
     if (!triggerName) {
         return;
     }
-    recipe.setTrigger(TRIGGERS[triggerName]);
+    recipe.setTrigger({ Trigger: TRIGGERS[triggerName] });
 }
 
 const TriggerSelector: React.FC<STATE> = ({ trigger, recipe }) => {

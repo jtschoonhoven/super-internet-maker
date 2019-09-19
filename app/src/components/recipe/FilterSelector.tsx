@@ -6,11 +6,11 @@ import React from 'react';
 
 import { BASE_EVENT, EVENT_FIELD_LABEL } from '../../constants/events_constants';
 import { BASE_FIELD } from '../../constants/fields_constants';
-import { BASE_TRIGGER, TRIGGER_FILTER, TRIGGER_FILTER_GROUP } from '../../constants/triggers_constants';
+import { TRIGGER_FILTER, TRIGGER_FILTER_GROUP } from '../../constants/triggers_constants';
 import { BASE_FILTER } from '../../constants/filters_constants';
 
 interface STATE {
-    trigger: BASE_TRIGGER;
+    filterGroup: TRIGGER_FILTER_GROUP;
 }
 
 function onAddFilter(filterGroup: TRIGGER_FILTER_GROUP, fieldName: string): void {
@@ -27,7 +27,8 @@ function onAddFilter(filterGroup: TRIGGER_FILTER_GROUP, fieldName: string): void
     filterGroup.addFilter({ filter: newFilter });
 }
 
-const FilterSelector: React.FC<STATE> = ({ trigger }) => {
+const FilterSelector: React.FC<STATE> = ({ filterGroup }) => {
+    const trigger = filterGroup.getParentTrigger();
     const FilterOptions = Object.entries(trigger.type).map(([fieldName, FieldLabel]) => {
         return (
             <Dropdown.Item as={ Button } eventKey={ fieldName } key={ fieldName }>
@@ -37,7 +38,7 @@ const FilterSelector: React.FC<STATE> = ({ trigger }) => {
     });
     return (
         <Form>
-            <Dropdown onSelect={ (fieldName: string): void => { onAddFilter(trigger.filterGroup, fieldName) } }>
+            <Dropdown onSelect={ (fieldName: string): void => { onAddFilter(filterGroup, fieldName) } }>
                 <Dropdown.Toggle variant="success" id="dropdown-basic">
                     Add Filter
                 </Dropdown.Toggle>
