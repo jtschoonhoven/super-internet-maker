@@ -12,18 +12,18 @@ export default class RECIPE extends SIM_BASE implements _RECIPE {
     readonly trigger?: BASE_TRIGGER;
     onUpdate?: (recipe: RECIPE) => void;
 
-    constructor({ trigger, onUpdate }: Partial<_RECIPE> = {}) {
+    constructor({ trigger, onUpdate }: _RECIPE) {
         super();
         this.parent = this;
         this.trigger = trigger;
         this.onUpdate = onUpdate;
-        console.log(this);
+        this.ensureLineage();
     }
 
     getParentTrigger(): never {
         throw new Error('cannot look up trigger on recipe');
     }
-
+    
     setTrigger({ Trigger }: { Trigger: typeof BASE_TRIGGER }): RECIPE {
         const trigger = new Trigger({ parent: this });
         const recipe = new RECIPE({ trigger, onUpdate: this.onUpdate });

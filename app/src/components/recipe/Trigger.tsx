@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import FilterGroup from './FilterGroup';
 import Button from 'react-bootstrap/Button';
 import { BASE_TRIGGER, TRIGGER_FILTER_GROUP } from '../../constants/triggers_constants';
-import FilterSelector from './FilterSelector';
 
 interface STATE {
   trigger?: BASE_TRIGGER;
@@ -23,7 +22,7 @@ const Trigger: React.FC<STATE> = ({ trigger }) => {
   return (
     <div>
       <Button variant="outline-primary" onClick={ () => { onAddFilterGroup(trigger) } }>
-        Add Filter
+        Add Filter Group
       </Button>
       { FilterGroups }
     </div>

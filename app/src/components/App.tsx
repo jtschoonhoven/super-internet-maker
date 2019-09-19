@@ -8,15 +8,16 @@ import Row from 'react-bootstrap/Row';
 import Recipe from './recipe/Recipe';
 import RECIPE from '../constants/recipe_constants';
 
-interface _STATE {
-    recipe?: RECIPE;
-}
-const STATE: _STATE = {};
-
+const _STORE = {
+    recipe: new RECIPE({}),
+};
 
 const App: React.FC = () => {
-    const [recipe, setRecipeState] = useState<RECIPE>(new RECIPE());
-    recipe.onUpdate = setRecipeState;
+    const [recipe, setRecipeState] = useState<RECIPE>(_STORE.recipe);
+    recipe.onUpdate = (newRecipe: RECIPE) => {
+        _STORE.recipe = newRecipe;
+        setRecipeState(_STORE.recipe);
+    };
     return (
         <Container className="App">
             <Row>

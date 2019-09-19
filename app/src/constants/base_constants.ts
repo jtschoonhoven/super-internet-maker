@@ -9,26 +9,6 @@ export default abstract class SIM_BASE {
 
     constructor() {
         this._uuid = uuidv4();
-        // hackily update the parent prop on any children (including collections of children)
-        Object.values(this).forEach((child) => {
-            if (child instanceof SIM_BASE) {
-                child.parent = this;
-            }
-            else if (child instanceof Array) {
-                child.forEach((grandChild) => {
-                    if (grandChild instanceof SIM_BASE) {
-                        grandChild.parent = this;
-                    }
-                });
-            }
-            else if (isPlainObject(child)) {
-                Object.values(child).forEach((grandChild) => {
-                    if (grandChild instanceof SIM_BASE) {
-                        grandChild.parent = this;
-                    }
-                });
-            }
-        });
     }
 
     getParentTrigger(): BASE_TRIGGER {
@@ -44,5 +24,34 @@ export default abstract class SIM_BASE {
             obj = obj.parent;
         }
         throw new Error(`failed to find trigger in any parent of ${ this }`);
+    }
+
+    ensureLineage(): void {
+        // hackily update the parent prop on any children (including collections of children)
+        Object.entries(this).forEach(([propName, child]) => {
+            if (propName === 'parent') {
+                return;
+            }
+            if (child instanceof SIM_BASE) {
+                child.parent = this;
+                child.ensureLineage();
+            }
+            else if (child instanceof Array) {
+                child.forEach((grandChild) => {
+                    if (grandChild instanceof SIM_BASE) {
+                        grandChild.parent = this;
+                        grandChild.ensureLineage();
+                    }
+                });
+            }
+            else if (isPlainObject(child)) {
+                Object.values(child).forEach((grandChild) => {
+                    if (grandChild instanceof SIM_BASE) {
+                        grandChild.parent = this;
+                        grandChild.ensureLineage();
+                    }
+                });
+            }
+        });
     }
 }
