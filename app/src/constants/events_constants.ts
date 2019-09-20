@@ -31,6 +31,10 @@ export class BASE_EVENT implements STRING_FIELD_MAP {
   constructor(props: { [key: string]: EVENT_FIELD_LABEL<typeof BASE_FIELD> }) {}
 }
 
+interface _NONE extends STRING_FIELD_MAP {}
+
+export class NONE extends BASE_EVENT implements _NONE {}
+
 interface _SMS extends STRING_FIELD_MAP {
   readonly toPhoneNumber: EVENT_FIELD_LABEL<typeof FIELD_PHONE_NUMBER>;
   readonly fromPhoneNumber: EVENT_FIELD_LABEL<typeof FIELD_PHONE_NUMBER>;

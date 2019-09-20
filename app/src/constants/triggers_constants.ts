@@ -10,13 +10,12 @@ import {
 import RECIPE from './recipe_constants';
 import { BASE_FILTER } from './filters_constants';
 import { BASE_FIELD } from './fields_constants';
-import { BASE_ACTION } from './actions_constants';
+import { BASE_ACTION, ACTION_NONE } from './actions_constants';
 import SIM_BASE from './base_constants';
 import Trigger from '../components/recipe/Trigger';
 
 
 const TRIGGERS: { [name: string]: typeof BASE_TRIGGER } = {};
-export type FILTERABLE = TRIGGER_FILTER | TRIGGER_FILTER_GROUP;
 export default TRIGGERS;
 
 export class TRIGGER_FILTER extends SIM_BASE {
@@ -43,14 +42,14 @@ export class TRIGGER_FILTER_GROUP extends SIM_BASE {
     parent?: BASE_TRIGGER | TRIGGER_FILTER_GROUP;
     readonly operator: 'and' | 'or';
     readonly filters: TRIGGER_FILTER[];
-    readonly actions: TRIGGER_ACTION[];
+    readonly action: BASE_ACTION;
     readonly filterGroups: TRIGGER_FILTER_GROUP[];
 
     constructor(
-        { filters, actions, filterGroups, operator, parent }:
+        { filters, action, filterGroups, operator, parent }:
         {
             filters?: TRIGGER_FILTER[],
-            actions?: TRIGGER_ACTION[],
+            action?: BASE_ACTION,
             filterGroups?: TRIGGER_FILTER_GROUP[],
             operator: 'and' | 'or',
             parent?: BASE_TRIGGER | TRIGGER_FILTER_GROUP,
@@ -58,10 +57,14 @@ export class TRIGGER_FILTER_GROUP extends SIM_BASE {
     ) {
         super();
         this.filters = filters || [];
-        this.actions = actions || [];
+        this.action = action || new ACTION_NONE({});
         this.filterGroups = filterGroups || [];
         this.operator = operator;
         this.parent = parent;
+    }
+
+    getCompatibleActions(): typeof BASE_ACTION[] {
+        return [ACTION_NONE];
     }
 
     addFilter({ filter }: { filter: TRIGGER_FILTER }): TRIGGER_FILTER_GROUP {
@@ -70,7 +73,7 @@ export class TRIGGER_FILTER_GROUP extends SIM_BASE {
         }
         const newFilterGroup = new TRIGGER_FILTER_GROUP({
             filters: [...this.filters, filter],
-            actions: this.actions,
+            action: this.action,
             filterGroups: this.filterGroups,
             operator: this.operator,
             parent: this.parent,
@@ -87,7 +90,7 @@ export class TRIGGER_FILTER_GROUP extends SIM_BASE {
         const newFilterGroups = [...this.filterGroups];
         const newFilterGroup = new TRIGGER_FILTER_GROUP({
             filters: this.filters,
-            actions: this.actions,
+            action: this.action,
             filterGroups: newFilterGroups,
             operator: this.operator,
             parent: this.parent,
@@ -95,17 +98,6 @@ export class TRIGGER_FILTER_GROUP extends SIM_BASE {
         const parentIndex = this.parent.filterGroups.indexOf(this);
         this.parent.updateFilterGroup({ filterGroup: newFilterGroup, atIndex: parentIndex });
         return newFilterGroup;
-    }
-}
-
-export class TRIGGER_ACTION extends SIM_BASE {
-    parent: BASE_TRIGGER | FILTERABLE;
-    readonly type: BASE_ACTION;
-
-    constructor({ type, parent }: TRIGGER_ACTION) {
-        super();
-        this.parent = parent;
-        this.type = type;
     }
 }
 

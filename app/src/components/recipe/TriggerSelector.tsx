@@ -1,8 +1,11 @@
 import React from 'react';
+import styled from 'styled-components';
 import Form from 'react-bootstrap/Form';
 
 import TRIGGERS, { BASE_TRIGGER, TRIGGER_FILTER_GROUP } from '../../constants/triggers_constants';
 import RECIPE from '../../constants/recipe_constants';
+
+const TriggerSelectorWrapper = styled.div``;
 
 interface STATE {
     recipe: RECIPE;
@@ -19,10 +22,17 @@ function onSelectTrigger(recipe: RECIPE, triggerName: string | undefined): void 
 
 const TriggerSelector: React.FC<STATE> = ({ recipe }) => {
     let selectedName = recipe.trigger ? recipe.trigger.label : undefined;
+    const TRIGGER_OPTIONS = Object.entries(TRIGGERS).map(([key, Trigger]) => {
+        return (
+            <option key={ key } value={ key }>
+                { Trigger.displayName }
+            </option>
+        );
+    })
     return (
-        <Form>
+        <TriggerSelectorWrapper>
             <Form.Group>
-                <Form.Label>Trigger</Form.Label>
+                <Form.Label>Select a Trigger</Form.Label>
                 <Form.Control
                     size="lg"
                     as="select"
@@ -30,19 +40,10 @@ const TriggerSelector: React.FC<STATE> = ({ recipe }) => {
                     onChange={ (e) => onSelectTrigger(recipe, e.currentTarget.value) }
                 >
                     <option disabled>--</option>
-                    {
-                        Object.entries(TRIGGERS).map(([key, Trigger]) => {
-                            return (
-                                <option key={ key } value={ key }>
-                                    { Trigger.displayName }
-                                </option>
-                            );
-                        })
-                    }
+                    { TRIGGER_OPTIONS }
                 </Form.Control>
-                <Form.Text>Some text.</Form.Text>
             </Form.Group>
-        </Form>
+        </TriggerSelectorWrapper>
     );
 }
 export default TriggerSelector;

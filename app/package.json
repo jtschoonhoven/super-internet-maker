@@ -38,7 +38,9 @@
     "@types/node": "12.7.1",
     "@types/react": "16.9.1",
     "@types/react-dom": "16.8.5",
+    "@types/styled-components": "^4.1.19",
     "@types/uuid": "^3.4.5",
-    "react-bootstrap": "^1.0.0-beta.11"
+    "react-bootstrap": "^1.0.0-beta.11",
+    "styled-components": "^4.3.2"
   }
 }

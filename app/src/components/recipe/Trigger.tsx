@@ -1,7 +1,13 @@
 import React, { useState } from 'react';
+import styled from 'styled-components';
 import FilterGroup from './FilterGroup';
 import Button from 'react-bootstrap/Button';
 import { BASE_TRIGGER, TRIGGER_FILTER_GROUP } from '../../constants/triggers_constants';
+
+const TriggerWrapper = styled.div`
+  padding: 1em;
+  background: #FFA50A;
+`;
 
 interface STATE {
   trigger?: BASE_TRIGGER;
@@ -14,18 +20,19 @@ function onAddFilterGroup(trigger: BASE_TRIGGER): void {
 
 const Trigger: React.FC<STATE> = ({ trigger }) => {
   if (!trigger) {
-    return <p>TODO: No trigger selected.</p>
+    return <p>Select a trigger to begin.</p>
   }
   const FilterGroups = trigger.filterGroups.map((filterGroup, index) => {
     return (<FilterGroup filterGroup={ filterGroup } key={ index } />);
   });
   return (
-    <div>
+    <TriggerWrapper>
+      <p>What happens next?</p>
+      { FilterGroups }
       <Button variant="outline-primary" onClick={ () => { onAddFilterGroup(trigger) } }>
         Add Filter Group
       </Button>
-      { FilterGroups }
-    </div>
+    </TriggerWrapper>
   );
 }
 export default Trigger;

@@ -1,6 +1,6 @@
+import styled from 'styled-components';
 import Button from 'react-bootstrap/Button';
 import Dropdown from 'react-bootstrap/Dropdown';
-import Form from 'react-bootstrap/Form';
 import get from 'lodash/get';
 import React from 'react';
 
@@ -8,6 +8,8 @@ import { BASE_EVENT, EVENT_FIELD_LABEL } from '../../constants/events_constants'
 import { BASE_FIELD } from '../../constants/fields_constants';
 import { TRIGGER_FILTER, TRIGGER_FILTER_GROUP } from '../../constants/triggers_constants';
 import { BASE_FILTER } from '../../constants/filters_constants';
+
+const FilterSelectorWrapper = styled.div``;
 
 interface STATE {
     filterGroup: TRIGGER_FILTER_GROUP;
@@ -37,7 +39,7 @@ const FilterSelector: React.FC<STATE> = ({ filterGroup }) => {
         );
     });
     return (
-        <Form>
+        <FilterSelectorWrapper>
             <Dropdown onSelect={ (fieldName: string): void => { onAddFilter(filterGroup, fieldName) } }>
                 <Dropdown.Toggle variant="success" id="dropdown-basic">
                     Add Filter
@@ -46,7 +48,7 @@ const FilterSelector: React.FC<STATE> = ({ filterGroup }) => {
                     { FilterOptions }
                 </Dropdown.Menu>
             </Dropdown>
-        </Form>
+        </FilterSelectorWrapper>
     );
 }
 export default FilterSelector;
