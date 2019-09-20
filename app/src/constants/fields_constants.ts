@@ -1,13 +1,16 @@
 import User from './user_constants';
+import SIM_BASE from './base_constants';
 
-export abstract class BASE_FIELD {
+export abstract class BASE_FIELD extends SIM_BASE {
+  parent?: SIM_BASE;
   static readonly type: string;
   static readonly displayName: string;
   readonly type: string;
   readonly displayName: string;
   readonly value: any;
 
-  constructor({ value }: { value: any }) {
+  constructor({ value, parent }: { value: any, parent?: SIM_BASE }) {
+    super();
     this.type = (this.constructor as typeof BASE_FIELD).type;
     this.displayName = (this.constructor as typeof BASE_FIELD).displayName;
     this.value = value;

@@ -4,8 +4,8 @@ import isPlainObject from 'lodash/isPlainObject';
 import { BASE_TRIGGER } from './triggers_constants';
 
 export default abstract class SIM_BASE {
+    abstract parent?: SIM_BASE;
     readonly _uuid: string;
-    abstract parent: SIM_BASE;
 
     constructor() {
         this._uuid = uuidv4();
@@ -18,6 +18,9 @@ export default abstract class SIM_BASE {
         const maxRecursionDepth = 999;
         let obj: SIM_BASE = this;
         for (let i=maxRecursionDepth; i; i--) {
+            if (!obj.parent) {
+                throw new Error(`parent of ${ obj } is undefined`);
+            }
             if (obj.parent instanceof BASE_TRIGGER) {
                 return obj.parent;
             }

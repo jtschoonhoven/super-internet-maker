@@ -12,7 +12,7 @@ const Recipe: React.FC<STATE> = ({ recipe }) => {
     const trigger = recipe.trigger;
     return (
         <div className="sim-recipe">
-            <TriggerSelector trigger={ trigger } recipe={ recipe } />
+            <TriggerSelector recipe={ recipe } />
             <Trigger trigger={ trigger } />
         </div>
     );

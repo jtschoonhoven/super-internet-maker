@@ -1,23 +1,24 @@
 import React from 'react';
 import Form from 'react-bootstrap/Form';
 
-import TRIGGERS, { BASE_TRIGGER } from '../../constants/triggers_constants';
+import TRIGGERS, { BASE_TRIGGER, TRIGGER_FILTER_GROUP } from '../../constants/triggers_constants';
 import RECIPE from '../../constants/recipe_constants';
 
 interface STATE {
     recipe: RECIPE;
-    trigger?: BASE_TRIGGER;
 }
 
 function onSelectTrigger(recipe: RECIPE, triggerName: string | undefined): void {
     if (!triggerName) {
         return;
     }
-    recipe.setTrigger({ Trigger: TRIGGERS[triggerName] });
+    const filterGroup = new TRIGGER_FILTER_GROUP({ operator: 'and' });
+    const trigger: BASE_TRIGGER = new TRIGGERS[triggerName]({ filterGroups: [filterGroup] });
+    recipe.updateTrigger({ trigger });
 }
 
-const TriggerSelector: React.FC<STATE> = ({ trigger, recipe }) => {
-    let selectedName = trigger ? trigger.label : undefined;
+const TriggerSelector: React.FC<STATE> = ({ recipe }) => {
+    let selectedName = recipe.trigger ? recipe.trigger.label : undefined;
     return (
         <Form>
             <Form.Group>

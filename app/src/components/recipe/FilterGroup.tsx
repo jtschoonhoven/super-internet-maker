@@ -8,7 +8,6 @@ interface STATE {
 }
 
 const FilterGroup: React.FC<STATE> = ({ filterGroup }) => {
-    const trigger = filterGroup.getParentTrigger();
     const Filters = filterGroup.filters.map((filter, index) => {
         return <Filter filter={ filter } key={ index }></Filter>
     });

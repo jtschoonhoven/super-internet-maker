@@ -8,12 +8,15 @@ import {
     FIELD_ANY,
     BASE_FIELD,
 } from './fields_constants';
+import SIM_BASE from './base_constants';
 
-export class EVENT_FIELD_LABEL<T extends typeof BASE_FIELD> {
+export class EVENT_FIELD_LABEL<T extends typeof BASE_FIELD> extends SIM_BASE {
+  readonly parent?: SIM_BASE;
   readonly displayName: string;
   readonly field: T;
 
   constructor(field: T, displayName: string) {
+    super();
     this.displayName = displayName;
     this.field = field;
   }

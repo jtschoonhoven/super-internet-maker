@@ -1,7 +1,12 @@
-export class BASE_FILTER {
+import SIM_BASE from "./base_constants";
+
+export class BASE_FILTER extends SIM_BASE {
+    parent?: SIM_BASE;
     readonly displayName: string;
 
-    constructor({ displayName }: BASE_FILTER) {
+    constructor({ displayName, parent }: { displayName: string, parent?: SIM_BASE }) {
+        super();
+        this.parent = parent;
         this.displayName = displayName;
     }
 }
@@ -11,9 +16,7 @@ interface _FILTERS {
 }
 
 const FILTERS: _FILTERS = {
-    regex: {
-        displayName: 'Regex',
-    },
+    regex: new BASE_FILTER({ displayName: 'regex' }),
 };
 
 export default FILTERS;

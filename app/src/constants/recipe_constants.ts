@@ -8,7 +8,7 @@ interface _RECIPE {
 }
 
 export default class RECIPE extends SIM_BASE implements _RECIPE {
-    parent: SIM_BASE;
+    parent?: SIM_BASE;
     readonly trigger?: BASE_TRIGGER;
     onUpdate?: (recipe: RECIPE) => void;
 
