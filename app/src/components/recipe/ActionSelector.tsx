@@ -1,19 +1,17 @@
 import React from 'react';
 import styled from 'styled-components';
-import Dropdown from 'react-bootstrap/Dropdown';
-import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 
-import { TRIGGER_FILTER_GROUP } from '../../constants/triggers_constants';
+import { FILTER_GROUP } from '../../constants/triggers_constants';
 import ACTIONS from '../../constants/actions_constants';
 
 const ActionSelectorWrapper = styled.div``;
 
 interface STATE {
-    filterGroup: TRIGGER_FILTER_GROUP;
+    filterGroup: FILTER_GROUP;
 }
 
-function onSelectAction(filterGroup: TRIGGER_FILTER_GROUP, actionLabel?: string): void {
+function onSelectAction(filterGroup: FILTER_GROUP, actionLabel?: string): void {
     if (!actionLabel) {
         return;
     }
@@ -21,12 +19,9 @@ function onSelectAction(filterGroup: TRIGGER_FILTER_GROUP, actionLabel?: string)
 }
 
 const ActionSelector: React.FC<STATE> = ({ filterGroup }) => {
-    const actions = filterGroup.getCompatibleActions();
-    const ActionOptions = actions.map((Action) => {
+    const ActionOptions = Object.values(ACTIONS).map((Action) => {
         return (
-            <option key={ Action.label } value={ Action.label }>
-                { Action.displayName }
-            </option>
+            <option key={ Action.label } value={ Action.label }>{ Action.displayName }</option>
         );
     })
     return (

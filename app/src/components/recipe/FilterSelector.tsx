@@ -6,16 +6,16 @@ import React from 'react';
 
 import { BASE_EVENT, EVENT_FIELD_LABEL } from '../../constants/events_constants';
 import { BASE_FIELD } from '../../constants/fields_constants';
-import { TRIGGER_FILTER, TRIGGER_FILTER_GROUP } from '../../constants/triggers_constants';
+import { TRIGGER_FILTER, FILTER_GROUP } from '../../constants/triggers_constants';
 import { BASE_FILTER } from '../../constants/filters_constants';
 
 const FilterSelectorWrapper = styled.div``;
 
 interface STATE {
-    filterGroup: TRIGGER_FILTER_GROUP;
+    filterGroup: FILTER_GROUP;
 }
 
-function onAddFilter(filterGroup: TRIGGER_FILTER_GROUP, fieldName: string): void {
+function onAddFilter(filterGroup: FILTER_GROUP, fieldName: string): void {
     const trigger = filterGroup.getParentTrigger();
     const Event = (trigger.type as typeof BASE_EVENT);
     const FieldLabel: EVENT_FIELD_LABEL<typeof BASE_FIELD> = get(Event, fieldName);

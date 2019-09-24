@@ -1,8 +1,8 @@
 import React from 'react';
-import { TRIGGER_FILTER, TRIGGER_FILTER_GROUP } from '../../constants/triggers_constants';
+import { TRIGGER_FILTER, FILTER_GROUP } from '../../constants/triggers_constants';
 
 interface STATE {
-    filter: TRIGGER_FILTER | TRIGGER_FILTER_GROUP;
+    filter: TRIGGER_FILTER | FILTER_GROUP;
 };
 
 const Filter: React.FC<STATE> = ({ filter }) => {

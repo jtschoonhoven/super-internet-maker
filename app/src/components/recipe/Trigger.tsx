@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import FilterGroup from './FilterGroup';
 import Button from 'react-bootstrap/Button';
-import { BASE_TRIGGER, TRIGGER_FILTER_GROUP } from '../../constants/triggers_constants';
+import { BASE_TRIGGER, FILTER_GROUP } from '../../constants/triggers_constants';
 
 const TriggerWrapper = styled.div`
   padding: 1em;
@@ -14,7 +14,7 @@ interface STATE {
 }
 
 function onAddFilterGroup(trigger: BASE_TRIGGER): void {
-  const filterGroup = new TRIGGER_FILTER_GROUP({ parent: trigger, operator: 'and' });
+  const filterGroup = new FILTER_GROUP({ parent: trigger, operator: 'and' });
   trigger.addFilterGroup({ filterGroup });
 }
 

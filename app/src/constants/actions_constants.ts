@@ -1,20 +1,20 @@
 import { BASE_EVENT } from './events_constants';
 import SIM_BASE from './base_constants';
-import { TRIGGER_FILTER_GROUP } from './triggers_constants';
+import { FILTER_GROUP } from './triggers_constants';
 import { NONE, SMS } from './events_constants';
 
 const ACTIONS: { [name: string]: typeof BASE_ACTION } = {};
 export default ACTIONS;
 
 interface _BASE_ACTION {
-  parent?: TRIGGER_FILTER_GROUP;
+  parent?: FILTER_GROUP;
   readonly label: string;
   readonly displayName: string;
   readonly type: typeof BASE_EVENT;
 }
 
 export class BASE_ACTION extends SIM_BASE implements _BASE_ACTION {
-  parent?: TRIGGER_FILTER_GROUP;
+  parent?: FILTER_GROUP;
   static readonly label: string;
   static readonly displayName: string;
   static readonly type: typeof BASE_EVENT;
@@ -24,7 +24,7 @@ export class BASE_ACTION extends SIM_BASE implements _BASE_ACTION {
   readonly type: typeof BASE_EVENT;
 
   // assign instance props from static props
-  constructor({ parent }: { parent?: TRIGGER_FILTER_GROUP }) {
+  constructor({ parent }: { parent?: FILTER_GROUP }) {
       super();
       this.label = (this.constructor as typeof BASE_ACTION).label;
       this.displayName = (this.constructor as typeof BASE_ACTION).displayName;
@@ -38,11 +38,11 @@ export class ACTION_NONE extends BASE_ACTION {
   static displayName = 'Do Nothing';
   static type = NONE;
 }
-ACTIONS[ACTION_NONE.name] = ACTION_NONE;
+ACTIONS[ACTION_NONE.label] = ACTION_NONE;
 
 export class ACTION_SEND_SMS extends BASE_ACTION {
   static label = 'sendSMS';
   static displayName = 'Send Text Message';
   static type = SMS;
 }
-ACTIONS[ACTION_SEND_SMS.name] = ACTION_SEND_SMS;
+ACTIONS[ACTION_SEND_SMS.label] = ACTION_SEND_SMS;

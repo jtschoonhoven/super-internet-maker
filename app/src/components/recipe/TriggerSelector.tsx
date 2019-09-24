@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import Form from 'react-bootstrap/Form';
 
-import TRIGGERS, { BASE_TRIGGER, TRIGGER_FILTER_GROUP } from '../../constants/triggers_constants';
+import TRIGGERS, { BASE_TRIGGER, FILTER_GROUP } from '../../constants/triggers_constants';
 import RECIPE from '../../constants/recipe_constants';
 
 const TriggerSelectorWrapper = styled.div``;
@@ -15,7 +15,7 @@ function onSelectTrigger(recipe: RECIPE, triggerName: string | undefined): void 
     if (!triggerName) {
         return;
     }
-    const filterGroup = new TRIGGER_FILTER_GROUP({ operator: 'and' });
+    const filterGroup = new FILTER_GROUP({ operator: 'and' });
     const trigger: BASE_TRIGGER = new TRIGGERS[triggerName]({ filterGroups: [filterGroup] });
     recipe.updateTrigger({ trigger });
 }

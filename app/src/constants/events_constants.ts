@@ -126,18 +126,22 @@ export class EMAIL extends BASE_EVENT implements _EMAIL {
 }
 
 interface _COMMIT extends STRING_FIELD_MAP {
+  readonly repo: EVENT_FIELD_LABEL<typeof FIELD_TEXT_LABEL>;
   readonly authorName: EVENT_FIELD_LABEL<typeof FIELD_TEXT_LABEL>;
   readonly sha: EVENT_FIELD_LABEL<typeof FIELD_TEXT_LABEL>;
 }
 
 export class COMMIT extends BASE_EVENT implements _COMMIT {
+  static readonly repo = new EVENT_FIELD_LABEL(FIELD_TEXT_LABEL, 'Repo Name');
   static readonly authorName = new EVENT_FIELD_LABEL(FIELD_TEXT_LABEL, 'Author Name');
   static readonly sha = new EVENT_FIELD_LABEL(FIELD_TEXT_LABEL, 'Commit SHA');
+  readonly repo: EVENT_FIELD_LABEL<typeof FIELD_TEXT_LABEL>;
   readonly authorName: EVENT_FIELD_LABEL<typeof FIELD_TEXT_LABEL>;
   readonly sha: EVENT_FIELD_LABEL<typeof FIELD_TEXT_LABEL>;
 
   constructor(props: _COMMIT) {
     super(props);
+    this.repo = props.repo;
     this.authorName = props.authorName;
     this.sha = props.sha;
   }

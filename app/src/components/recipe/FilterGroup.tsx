@@ -1,18 +1,18 @@
 import React from 'react';
 import styled from 'styled-components';
-import { TRIGGER_FILTER_GROUP } from '../../constants/triggers_constants';
+import { FILTER_GROUP } from '../../constants/triggers_constants';
 import Filter from './Filter';
 import FilterSelector from './FilterSelector';
 import ActionSelector from './ActionSelector';
 
 const FilterGroupWrapper = styled.div`
-    margin: 1em;
+    margin-bottom: 1em;
     padding: 1em;
     background: #FFDE07;
 `;
 
 interface STATE {
-    filterGroup: TRIGGER_FILTER_GROUP;
+    filterGroup: FILTER_GROUP;
 }
 
 const FilterGroup: React.FC<STATE> = ({ filterGroup }) => {

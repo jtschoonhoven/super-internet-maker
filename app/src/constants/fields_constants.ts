@@ -52,14 +52,14 @@ export class FIELD_TEXT_FREE extends BASE_FIELD {
 }
 
 export class FIELD_TEXT_LABEL extends BASE_FIELD {
-  type = 'name';
-  displayName = 'Short Text Field'
+  static readonly type = 'name';
+  static readonly displayName = 'Short Text Field'
   readonly value: string = 'TODO';
 }
 
 export class FIELD_BLOB extends BASE_FIELD {
-  static type = 'blob';
-  static displayName = 'Binary Data'
+  static readonly type = 'blob';
+  static readonly displayName = 'Binary Data'
   readonly mimeType: 'image/jpeg' | 'image/png' = 'image/jpeg'; // TODO
   readonly value: string = 'TODO';
 }
