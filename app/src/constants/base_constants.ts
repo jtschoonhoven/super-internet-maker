@@ -1,7 +1,6 @@
 import uuidv4 from 'uuid/v4';
-import get from 'lodash/get';
 import isPlainObject from 'lodash/isPlainObject';
-import { BASE_TRIGGER } from './triggers_constants';
+import { BASE_TRIGGER } from '.';
 
 export default abstract class SIM_BASE {
     abstract parent?: SIM_BASE;

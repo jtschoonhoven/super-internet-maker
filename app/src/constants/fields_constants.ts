@@ -1,5 +1,6 @@
 import User from './user_constants';
-import SIM_BASE from './base_constants';
+import { SIM_BASE } from '.';
+
 
 export abstract class BASE_FIELD extends SIM_BASE {
   parent?: SIM_BASE;

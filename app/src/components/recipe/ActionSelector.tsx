@@ -27,7 +27,7 @@ const ActionSelector: React.FC<STATE> = ({ filterGroup }) => {
     return (
         <ActionSelectorWrapper>
             <Form.Group>
-                <Form.Label>What should it do</Form.Label>
+                <h3>Then do this...</h3>
                 <Form.Control
                     size="lg"
                     as="select"

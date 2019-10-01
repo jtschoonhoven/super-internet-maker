@@ -4,9 +4,9 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import get from 'lodash/get';
 import React from 'react';
 
-import { BASE_EVENT, EVENT_FIELD_LABEL } from '../../constants/events_constants';
 import { BASE_FIELD } from '../../constants/fields_constants';
 import { TRIGGER_FILTER, FILTER_GROUP } from '../../constants/triggers_constants';
+import { BASE_EVENT, EVENT_FIELD_LABEL } from '../../constants/events_constants';
 import { BASE_FILTER } from '../../constants/filters_constants';
 
 const FilterSelectorWrapper = styled.div``;

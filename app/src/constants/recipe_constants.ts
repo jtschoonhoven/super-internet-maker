@@ -1,5 +1,5 @@
 import { BASE_TRIGGER } from './triggers_constants';
-import SIM_BASE from './base_constants';
+import { SIM_BASE } from '.';
 
 
 interface _RECIPE {
@@ -23,7 +23,7 @@ export default class RECIPE extends SIM_BASE implements _RECIPE {
     getParentTrigger(): never {
         throw new Error('cannot look up trigger on recipe');
     }
-    
+
     setTrigger({ Trigger }: { Trigger: typeof BASE_TRIGGER }): RECIPE {
         const trigger = new Trigger({ parent: this });
         const recipe = new RECIPE({ trigger, onUpdate: this.onUpdate });

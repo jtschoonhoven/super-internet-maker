@@ -8,7 +8,7 @@ import {
     FIELD_ANY,
     BASE_FIELD,
 } from './fields_constants';
-import SIM_BASE from './base_constants';
+import { SIM_BASE } from '.';
 
 export class EVENT_FIELD_LABEL<T extends typeof BASE_FIELD> extends SIM_BASE {
   readonly parent?: SIM_BASE;

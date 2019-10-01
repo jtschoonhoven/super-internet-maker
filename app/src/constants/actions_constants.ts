@@ -1,5 +1,5 @@
+import { SIM_BASE } from '.';
 import { BASE_EVENT } from './events_constants';
-import SIM_BASE from './base_constants';
 import { FILTER_GROUP } from './triggers_constants';
 import { NONE, SMS } from './events_constants';
 

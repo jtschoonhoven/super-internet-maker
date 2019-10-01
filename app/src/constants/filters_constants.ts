@@ -1,4 +1,4 @@
-import SIM_BASE from "./base_constants";
+import { SIM_BASE } from ".";
 
 export class BASE_FILTER extends SIM_BASE {
     parent?: SIM_BASE;

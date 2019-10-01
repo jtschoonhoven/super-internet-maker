@@ -11,8 +11,7 @@ import RECIPE from './recipe_constants';
 import { BASE_FILTER } from './filters_constants';
 import { BASE_FIELD } from './fields_constants';
 import { BASE_ACTION, ACTION_NONE } from './actions_constants';
-import SIM_BASE from './base_constants';
-import Trigger from '../components/recipe/Trigger';
+import { SIM_BASE } from '.';
 
 
 const TRIGGERS: { [name: string]: typeof BASE_TRIGGER } = {};
@@ -40,7 +39,7 @@ export class TRIGGER_FILTER extends SIM_BASE {
 
 export class FILTER_GROUP extends SIM_BASE {
     parent?: BASE_TRIGGER | FILTER_GROUP;
-    readonly condition: 'if' | 'elif' | 'else';
+    readonly condition: 'if' | 'elif';
     readonly operator: 'and' | 'or';
     readonly filters: TRIGGER_FILTER[];
     readonly action: BASE_ACTION;
@@ -50,7 +49,7 @@ export class FILTER_GROUP extends SIM_BASE {
         { parent, condition, operator, filters, action, filterGroups }:
         {
             parent?: BASE_TRIGGER | FILTER_GROUP;
-            condition?: 'if' | 'elif' | 'else';
+            condition?: 'if' | 'elif';
             operator?: 'and' | 'or';
             filters?: TRIGGER_FILTER[];
             action?: BASE_ACTION;
@@ -132,7 +131,7 @@ export class BASE_TRIGGER extends SIM_BASE implements _BASE_TRIGGER {
         this.displayName = (this.constructor as typeof BASE_TRIGGER).displayName;
         this.type = (this.constructor as typeof BASE_TRIGGER).type;
         this.parent = parent;
-        this.filterGroups = [new FILTER_GROUP({ condition: 'if' })];
+        this.filterGroups = filterGroups || [new FILTER_GROUP({ condition: 'if' })];
         this.actions = actions || [];
     }
 
@@ -167,49 +166,49 @@ export class BASE_TRIGGER extends SIM_BASE implements _BASE_TRIGGER {
     }
 }
 
-export class TRIGGER_SMS_RECEIVED extends BASE_TRIGGER {
+class TRIGGER_SMS_RECEIVED extends BASE_TRIGGER {
     static label = 'smsReceived';
     static displayName = 'Receive SMS';
     static type = SMS;
 }
 TRIGGERS[TRIGGER_SMS_RECEIVED.label] = TRIGGER_SMS_RECEIVED;
 
-export class TRIGGER_VOICE_CALL_RECEIVED extends BASE_TRIGGER {
+class TRIGGER_VOICE_CALL_RECEIVED extends BASE_TRIGGER {
     static label = 'voiceCallReceived';
     static displayName = 'Receive Voice Call';
     static type = VOICE_CALL;
 }
 TRIGGERS[TRIGGER_VOICE_CALL_RECEIVED.label] = TRIGGER_VOICE_CALL_RECEIVED;
 
-export class TRIGGER_USER_MODEL_UPDATED extends BASE_TRIGGER {
+class TRIGGER_USER_MODEL_UPDATED extends BASE_TRIGGER {
     static label = 'userModelUpdated';
     static displayName = 'User Property Changed';
     static type = USER_PROPERTY_CHANGE;
 }
 TRIGGERS[TRIGGER_USER_MODEL_UPDATED.label] = TRIGGER_USER_MODEL_UPDATED;
 
-export class TRIGGER_USER_LOGIN_SUCCEEDED extends BASE_TRIGGER {
+class TRIGGER_USER_LOGIN_SUCCEEDED extends BASE_TRIGGER {
     static label = 'userLoginSucceeded';
     static displayName = 'User Logged In';
     static type = USER_PROPERTY_CHANGE;
 }
 TRIGGERS[TRIGGER_USER_LOGIN_SUCCEEDED.label] = TRIGGER_USER_LOGIN_SUCCEEDED;
 
-export class TRIGGER_EMAIL_RECEIVED extends BASE_TRIGGER {
+class TRIGGER_EMAIL_RECEIVED extends BASE_TRIGGER {
     static label = 'emailReceived';
     static displayName = 'Receive Email';
     static type = EMAIL;
 }
 TRIGGERS[TRIGGER_EMAIL_RECEIVED.label] = TRIGGER_EMAIL_RECEIVED;
 
-export class TRIGGER_GIT_BRANCH_UPDATED extends BASE_TRIGGER {
+class TRIGGER_GIT_BRANCH_UPDATED extends BASE_TRIGGER {
     static label = 'gitBranchUpdated';
     static displayName = 'Git Branch Updated';
     static type = COMMIT;
 }
 TRIGGERS[TRIGGER_GIT_BRANCH_UPDATED.label] = TRIGGER_GIT_BRANCH_UPDATED;
 
-export class TRIGGER_CALENDAR_EVENT_STARTED extends BASE_TRIGGER {
+class TRIGGER_CALENDAR_EVENT_STARTED extends BASE_TRIGGER {
     static label = 'calendarEventStarted';
     static displayName = 'Calendar Event Started';
     static type = CALENDAR_EVENT;
