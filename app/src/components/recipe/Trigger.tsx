@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import FilterGroup from './FilterGroup';
-import Button from 'react-bootstrap/Button';
+
 import { BASE_TRIGGER, FILTER_GROUP } from '../../constants/triggers_constants';
+import TriggerSelector from './TriggerSelector';
+import RECIPE from '../../constants/recipe_constants';
 
 const TriggerWrapper = styled.div`
   padding: 1em;
   background: #FFA50A;
+  text-align: center;
 `;
 
 interface STATE {
-  trigger?: BASE_TRIGGER;
+  recipe: RECIPE;
 }
 
 function onAddFilterGroup(trigger: BASE_TRIGGER): void {
@@ -18,21 +20,27 @@ function onAddFilterGroup(trigger: BASE_TRIGGER): void {
   trigger.addFilterGroup({ filterGroup });
 }
 
-const Trigger: React.FC<STATE> = ({ trigger }) => {
-  if (!trigger) {
-    return <p>Select a trigger to begin.</p>
-  }
-  const FilterGroups = trigger.filterGroups.map((filterGroup, index) => {
-    return (<FilterGroup filterGroup={ filterGroup } key={ index } />);
-  });
+const Trigger: React.FC<STATE> = ({ recipe }) => {
   return (
     <TriggerWrapper>
-      <p>What happens next?</p>
-      { FilterGroups }
-      <Button variant="outline-primary" onClick={ () => { onAddFilterGroup(trigger) } }>
-        Add Filter Group
-      </Button>
+      <p>⚠️</p>
+      <TriggerSelector recipe={ recipe } />
     </TriggerWrapper>
   );
+  // if (!trigger) {
+  //   return <p>Select a trigger to begin.</p>
+  // }
+  // const FilterGroups = trigger.filterGroups.map((filterGroup, index) => {
+  //   return (<FilterGroup filterGroup={ filterGroup } key={ index } />);
+  // });
+  // return (
+  //   <TriggerWrapper>
+  //     <p>What happens next?</p>
+  //     { FilterGroups }
+  //     <Button variant="outline-primary" onClick={ () => { onAddFilterGroup(trigger) } }>
+  //       Add Filter Group
+  //     </Button>
+  //   </TriggerWrapper>
+  // );
 }
 export default Trigger;

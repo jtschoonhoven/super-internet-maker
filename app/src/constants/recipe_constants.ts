@@ -1,4 +1,4 @@
-import { BASE_TRIGGER } from './triggers_constants';
+import { BASE_TRIGGER } from '.';
 import { SIM_BASE } from '.';
 
 
@@ -12,10 +12,10 @@ export default class RECIPE extends SIM_BASE implements _RECIPE {
     readonly trigger?: BASE_TRIGGER;
     onUpdate?: (recipe: RECIPE) => void;
 
-    constructor({ trigger, onUpdate }: _RECIPE) {
+    constructor({ trigger, onUpdate }: { trigger?: BASE_TRIGGER, onUpdate?: (recipe: RECIPE) => void }) {
         super();
         this.parent = this;
-        this.trigger = trigger;
+        this.trigger = trigger;;
         this.onUpdate = onUpdate;
         this.ensureLineage();
     }
@@ -24,20 +24,11 @@ export default class RECIPE extends SIM_BASE implements _RECIPE {
         throw new Error('cannot look up trigger on recipe');
     }
 
-    setTrigger({ Trigger }: { Trigger: typeof BASE_TRIGGER }): RECIPE {
-        const trigger = new Trigger({ parent: this });
-        const recipe = new RECIPE({ trigger, onUpdate: this.onUpdate });
-        if (this.onUpdate) {
-            this.onUpdate(recipe);
-        }
-        return recipe;
-    }
-
-    updateTrigger({ trigger }: { trigger: BASE_TRIGGER }): RECIPE {
+    updateTrigger({ trigger }: { trigger: BASE_TRIGGER }): BASE_TRIGGER {
         const newRecipe = new RECIPE({ trigger, onUpdate: this.onUpdate });
         if (this.onUpdate) {
             this.onUpdate(newRecipe);
         }
-        return newRecipe;
+        return trigger;
     }
 }

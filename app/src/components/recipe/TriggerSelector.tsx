@@ -11,7 +11,7 @@ interface STATE {
     recipe: RECIPE;
 }
 
-function onSelectTrigger(recipe: RECIPE, triggerName: string | undefined): void {
+function onSelectTrigger(recipe: RECIPE, triggerName?: string): void {
     if (!triggerName) {
         return;
     }
@@ -32,7 +32,7 @@ const TriggerSelector: React.FC<STATE> = ({ recipe }) => {
     return (
         <TriggerSelectorWrapper>
             <Form.Group>
-                <Form.Label>Select a Trigger</Form.Label>
+                <Form.Label>Select Trigger</Form.Label>
                 <Form.Control
                     size="lg"
                     as="select"

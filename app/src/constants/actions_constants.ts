@@ -25,11 +25,20 @@ export class BASE_ACTION extends SIM_BASE implements _BASE_ACTION {
 
   // assign instance props from static props
   constructor({ parent }: { parent?: FILTER_GROUP }) {
-      super();
-      this.label = (this.constructor as typeof BASE_ACTION).label;
-      this.displayName = (this.constructor as typeof BASE_ACTION).displayName;
-      this.type = (this.constructor as typeof BASE_ACTION).type;
-      this.parent = parent;
+    super();
+    this.label = (this.constructor as typeof BASE_ACTION).label;
+    this.displayName = (this.constructor as typeof BASE_ACTION).displayName;
+    this.type = (this.constructor as typeof BASE_ACTION).type;
+    this.parent = parent;
+  }
+
+  replaceWith({ action }: { action: BASE_ACTION }): BASE_ACTION {
+    if (!this.parent) {
+      throw new Error('cannot replace action that does not have a parent');
+    }
+    const index = this.parent.actions.indexOf(this);
+    this.parent.updateAction({ action, atIndex: index });
+    return action;
   }
 }
 

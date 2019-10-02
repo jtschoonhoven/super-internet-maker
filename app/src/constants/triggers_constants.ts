@@ -6,6 +6,7 @@ import {
     EMAIL,
     COMMIT,
     CALENDAR_EVENT,
+    NONE,
 } from './events_constants';
 import RECIPE from './recipe_constants';
 import { BASE_FILTER } from './filters_constants';
@@ -39,30 +40,30 @@ export class TRIGGER_FILTER extends SIM_BASE {
 
 export class FILTER_GROUP extends SIM_BASE {
     parent?: BASE_TRIGGER | FILTER_GROUP;
-    readonly condition: 'if' | 'elif';
     readonly operator: 'and' | 'or';
     readonly filters: TRIGGER_FILTER[];
-    readonly action: BASE_ACTION;
+    readonly actions: BASE_ACTION[];
     readonly filterGroups: FILTER_GROUP[];
+    readonly filterGroupElse?: FILTER_GROUP;
 
     constructor(
-        { parent, condition, operator, filters, action, filterGroups }:
+        { parent, operator, filters, actions, filterGroups, filterGroupElse }:
         {
             parent?: BASE_TRIGGER | FILTER_GROUP;
-            condition?: 'if' | 'elif';
             operator?: 'and' | 'or';
             filters?: TRIGGER_FILTER[];
-            action?: BASE_ACTION;
+            actions?: BASE_ACTION[];
             filterGroups?: FILTER_GROUP[];
+            filterGroupElse?: FILTER_GROUP;
         },
     ) {
         super();
         this.parent = parent;
-        this.condition = condition || 'if';
         this.operator = operator || 'and';
         this.filters = filters || [];
-        this.action = action || new ACTION_NONE({});
+        this.actions = actions || [new ACTION_NONE({})];
         this.filterGroups = filterGroups || [];
+        this.filterGroupElse = filterGroupElse;
     }
 
     addFilter({ filter }: { filter: TRIGGER_FILTER }): FILTER_GROUP {
@@ -71,24 +72,62 @@ export class FILTER_GROUP extends SIM_BASE {
         }
         const newFilterGroup = new FILTER_GROUP({
             filters: [...this.filters, filter],
-            action: this.action,
+            actions: this.actions,
             filterGroups: this.filterGroups,
             operator: this.operator,
             parent: this.parent,
         });
-        const parentIndex = this.parent.filterGroups.indexOf(this);
-        this.parent.updateFilterGroup({ filterGroup: newFilterGroup, atIndex: parentIndex });
-        return newFilterGroup;
+        return this.replaceWith({ filterGroup: newFilterGroup });
+    }
+
+    addAction({ action }: { action: BASE_ACTION }): FILTER_GROUP {
+        if (!this.parent) {
+            throw new Error('cannot add action to filter group without a parent');
+        }
+        const newFilterGroup = new FILTER_GROUP({
+            filters:this.filters,
+            actions: [...this.actions, action],
+            filterGroups: this.filterGroups,
+            operator: this.operator,
+            parent: this.parent,
+        });
+        return this.replaceWith({ filterGroup: newFilterGroup });
+    }
+
+    updateAction({ action, atIndex }: { action: BASE_ACTION, atIndex: number }): FILTER_GROUP {
+        if (!this.parent) {
+            throw new Error('cannot update action on filter group without a parent');
+        }
+        const newActions = [...this.actions];
+        newActions[atIndex] = action;
+        const newFilterGroup = new FILTER_GROUP({
+            filters: this.filters,
+            actions: newActions,
+            filterGroups: this.filterGroups,
+            operator: this.operator,
+            parent: this.parent,
+        });
+        return this.replaceWith({ filterGroup: newFilterGroup });
+    }
+
+    replaceWith({ filterGroup }: { filterGroup: FILTER_GROUP }): FILTER_GROUP {
+        if (!this.parent) {
+            throw new Error('cannot replace filter group without a parent');
+        }
+        const atIndex = this.parent.filterGroups.indexOf(this);
+        this.parent.updateFilterGroup({ filterGroup, atIndex });
+        return filterGroup;
     }
 
     updateFilterGroup({ filterGroup, atIndex }: { filterGroup: FILTER_GROUP, atIndex: number }): FILTER_GROUP {
         if (!this.parent) {
-            throw new Error('cannot update filter in filter group without a parent');
+            throw new Error('cannot update filter group without a parent');
         }
         const newFilterGroups = [...this.filterGroups];
+        newFilterGroups[atIndex] = filterGroup;
         const newFilterGroup = new FILTER_GROUP({
             filters: this.filters,
-            action: this.action,
+            actions: this.actions,
             filterGroups: newFilterGroups,
             operator: this.operator,
             parent: this.parent,
@@ -105,7 +144,6 @@ interface _BASE_TRIGGER {
     readonly displayName: string;
     readonly type: typeof BASE_EVENT;
     readonly filterGroups: FILTER_GROUP[];
-    readonly actions: BASE_ACTION[];
 }
 
 export class BASE_TRIGGER extends SIM_BASE implements _BASE_TRIGGER {
@@ -119,20 +157,18 @@ export class BASE_TRIGGER extends SIM_BASE implements _BASE_TRIGGER {
     readonly type: typeof BASE_EVENT;
     // instance-only props
     readonly filterGroups: FILTER_GROUP[];
-    readonly actions: BASE_ACTION[];
 
     // assign instance props from static props
     constructor(
-        { parent, filterGroups, actions }:
-        { parent?: RECIPE, filterGroups?: FILTER_GROUP[], actions?: BASE_ACTION[] },
+        { parent, filterGroups }:
+        { parent?: RECIPE, filterGroups?: FILTER_GROUP[] },
     ) {
         super();
         this.label = (this.constructor as typeof BASE_TRIGGER).label;
         this.displayName = (this.constructor as typeof BASE_TRIGGER).displayName;
         this.type = (this.constructor as typeof BASE_TRIGGER).type;
         this.parent = parent;
-        this.filterGroups = filterGroups || [new FILTER_GROUP({ condition: 'if' })];
-        this.actions = actions || [];
+        this.filterGroups = filterGroups || [new FILTER_GROUP({})];
     }
 
     addFilterGroup({ filterGroup }: { filterGroup: FILTER_GROUP }): BASE_TRIGGER {
@@ -143,7 +179,6 @@ export class BASE_TRIGGER extends SIM_BASE implements _BASE_TRIGGER {
         const newTrigger = new Trigger({
             parent: this.parent,
             filterGroups: [...this.filterGroups, filterGroup],
-            actions: this.actions,
         });
         this.parent.updateTrigger({ trigger: newTrigger });
         return newTrigger;
@@ -159,10 +194,16 @@ export class BASE_TRIGGER extends SIM_BASE implements _BASE_TRIGGER {
         const newTrigger = new Trigger({
             parent: this.parent,
             filterGroups: newFilterGroups,
-            actions: this.actions,
         });
         this.parent.updateTrigger({ trigger: newTrigger });
         return newTrigger;
+    }
+
+    replaceWith({ trigger }: { trigger: BASE_TRIGGER }): BASE_TRIGGER {
+        if (!this.parent) {
+            throw new Error('cannot replace trigger without parent');
+        }
+        return this.parent.updateTrigger({ trigger });
     }
 }
 
