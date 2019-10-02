@@ -11,6 +11,7 @@ const FilterGroupWrapper = styled.div`
     padding: 1em;
     background: #FFDE07;
     text-align: center;
+    margin-bottom: 1em;
 `;
 
 interface STATE {

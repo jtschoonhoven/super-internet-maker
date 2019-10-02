@@ -6,8 +6,10 @@ import Col from 'react-bootstrap/Col';
 import RECIPE from '../../constants/recipe_constants';
 import Trigger from './Trigger';
 import FilterGroup from './FilterGroup';
-import { SIM_BASE, BASE_TRIGGER, FILTER_GROUP, BASE_ACTION } from '../../constants';
 import Action from './Action';
+import ActionMod from './ActionMod';
+import TriggerMod from './TriggerMod';
+import { SIM_BASE, BASE_TRIGGER, FILTER_GROUP, BASE_ACTION } from '../../constants';
 
 
 const RecipeWrapper = styled.div`
@@ -36,23 +38,28 @@ function flattenRecipe(
     });
     if (node instanceof RECIPE) {
         matrix[rowNum][colNum] = <Trigger recipe={ node } />;
-        flattenRecipe(node.trigger, matrix, rowNum, colNum);
+        flattenRecipe(node.trigger, matrix, rowNum, colNum + 1);
     }
     else if (node instanceof BASE_TRIGGER) {
+        matrix[rowNum][colNum] = <TriggerMod trigger={ node } />;
         node.filterGroups.forEach((filterGroup) => {
             flattenRecipe(filterGroup, matrix, rowNum, colNum + 1);
             rowNum += 1;
         });
     }
     else if (node instanceof FILTER_GROUP) {
-        matrix[rowNum][colNum] = <FilterGroup filterGroup={ node }></FilterGroup>;
-        colNum += 1;
+        if (node.filters.length) {
+            matrix[rowNum][colNum] = <FilterGroup filterGroup={ node }></FilterGroup>;
+            colNum += 1;
+        }
         node.actions.forEach((action) => {
             flattenRecipe(action, matrix, rowNum, colNum);
             rowNum += 1;
         });
     }
     else if (node instanceof BASE_ACTION) {
+        matrix[rowNum][colNum] = <ActionMod action={ node }></ActionMod>
+        colNum += 1;
         matrix[rowNum][colNum] = <Action action={ node }></Action>;
     }
     else {

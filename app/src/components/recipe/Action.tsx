@@ -9,6 +9,7 @@ const ActionWrapper = styled.div`
     text-align: center;
     padding: 1em;
     background: #FFDE07;
+    margin-bottom: 1em;
 `;
 
 interface STATE {

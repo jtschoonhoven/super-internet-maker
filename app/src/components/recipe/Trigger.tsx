@@ -15,10 +15,10 @@ interface STATE {
   recipe: RECIPE;
 }
 
-function onAddFilterGroup(trigger: BASE_TRIGGER): void {
-  const filterGroup = new FILTER_GROUP({ parent: trigger, operator: 'and' });
-  trigger.addFilterGroup({ filterGroup });
-}
+// function onAddFilterGroup(trigger: BASE_TRIGGER): void {
+//   const filterGroup = new FILTER_GROUP({ parent: trigger, operator: 'and' });
+//   trigger.addFilterGroup({ filterGroup });
+// }
 
 const Trigger: React.FC<STATE> = ({ recipe }) => {
   return (
