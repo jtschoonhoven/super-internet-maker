@@ -1,18 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { FILTER_GROUP } from '../../constants/triggers_constants';
-import FilterSelector from './FilterSelector';
-import ActionSelector from './ActionSelector';
+import IngredientWrapper from './IngredientWrapper';
 import FilterGroupList from './FilterGroupList';
+import { FILTER_GROUP } from '../../constants';
 
-
-const FilterGroupWrapper = styled.div`
-    padding: 1em;
-    background: #FFDE07;
-    text-align: center;
-    margin-bottom: 1em;
-`;
 
 interface STATE {
     filterGroup: FILTER_GROUP;
@@ -20,11 +12,9 @@ interface STATE {
 
 const FilterGroup: React.FC<STATE> = ({ filterGroup }) => {
     return (
-        <FilterGroupWrapper>
-            <p>❗</p>
-            <p>Select Filter</p>
+        <IngredientWrapper label="A list">
             <FilterGroupList filterGroup={ filterGroup } />
-        </FilterGroupWrapper>
+        </IngredientWrapper>
     );
     // let Condition = null;
     // if (filterGroup.filters.length) {

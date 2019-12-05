@@ -9,5 +9,5 @@ export * from './actions_constants';
 export * from './events_constants';
 export * from './fields_constants';
 export * from './filters_constants';
-export * from './recipe_constants';
+export { default as RECIPE } from './recipe_constants';
 export * from './user_constants';

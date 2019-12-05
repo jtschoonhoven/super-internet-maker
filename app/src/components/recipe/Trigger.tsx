@@ -1,17 +1,11 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
-import { BASE_TRIGGER, FILTER_GROUP } from '../../constants/triggers_constants';
-import TriggerSelector from './TriggerSelector';
-import RECIPE from '../../constants/recipe_constants';
+import FilterGroup from './FilterGroup';
+import IngredientWrapper from './IngredientWrapper';
+import { RECIPE } from '../../constants';
 
-const TriggerWrapper = styled.div`
-  padding: 1em;
-  background: #FFA50A;
-  text-align: center;
-`;
-
-interface STATE {
+interface Props {
   recipe: RECIPE;
 }
 
@@ -20,19 +14,20 @@ interface STATE {
 //   trigger.addFilterGroup({ filterGroup });
 // }
 
-const Trigger: React.FC<STATE> = ({ recipe }) => {
+const Trigger: React.FC<Props> = ({ recipe }) => {
+  const trigger = recipe.trigger;
+  let FilterGroups: Array<React.ReactElement> = [];
+  if (trigger) {
+    FilterGroups = trigger.filterGroups.map((filterGroup, index) => {
+      return <FilterGroup filterGroup={ filterGroup } key={ index } />;
+    });
+  }
+  const label = `Trigger: ${ trigger ? trigger.displayName : 'Select a trigger' }`;
   return (
-    <TriggerWrapper>
-      <p>⚠️</p>
-      <TriggerSelector recipe={ recipe } />
-    </TriggerWrapper>
+    <IngredientWrapper label={ label }>
+      { FilterGroups }
+    </IngredientWrapper>
   );
-  // if (!trigger) {
-  //   return <p>Select a trigger to begin.</p>
-  // }
-  // const FilterGroups = trigger.filterGroups.map((filterGroup, index) => {
-  //   return (<FilterGroup filterGroup={ filterGroup } key={ index } />);
-  // });
   // return (
   //   <TriggerWrapper>
   //     <p>What happens next?</p>

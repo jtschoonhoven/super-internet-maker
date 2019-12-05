@@ -2,8 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import Form from 'react-bootstrap/Form';
 
-import TRIGGERS, { BASE_TRIGGER, FILTER_GROUP } from '../../constants/triggers_constants';
-import RECIPE from '../../constants/recipe_constants';
+import { TRIGGERS, BASE_TRIGGER, FILTER_GROUP } from '../../constants';
+import { RECIPE } from '../../constants';
 
 const TriggerSelectorWrapper = styled.div``;
 
