@@ -12,8 +12,7 @@ import TriggerMod from './TriggerMod';
 import { SIM_BASE, BASE_TRIGGER, FILTER_GROUP, BASE_ACTION } from '../../constants';
 
 
-const RecipeWrapper = styled.div`
-`;
+const RecipeWrapper = styled.div``;
 
 interface STATE {
     recipe: RECIPE;
@@ -25,9 +24,6 @@ function flattenRecipe(
     rowNum: number = 0,
     colNum: number = 0,
 ) {
-    if (!node) {
-        return [];
-    }
     while (matrix.length <= rowNum) {
         matrix.push([]);
     }
@@ -36,47 +32,51 @@ function flattenRecipe(
             row.push(null);
         }
     });
+    if (!node) {
+        return [];
+    }
     if (node instanceof RECIPE) {
         matrix[rowNum][colNum] = <Trigger recipe={ node } />;
         flattenRecipe(node.trigger, matrix, rowNum, colNum + 1);
     }
     else if (node instanceof BASE_TRIGGER) {
-        matrix[rowNum][colNum] = <TriggerMod trigger={ node } />;
         node.filterGroups.forEach((filterGroup) => {
-            flattenRecipe(filterGroup, matrix, rowNum, colNum + 1);
+            flattenRecipe(filterGroup, matrix, rowNum, colNum);
             rowNum += 1;
         });
     }
     else if (node instanceof FILTER_GROUP) {
-        if (node.filters.length) {
-            matrix[rowNum][colNum] = <FilterGroup filterGroup={ node }></FilterGroup>;
-            colNum += 1;
-        }
+        matrix[rowNum][colNum] = <FilterGroup filterGroup={ node }></FilterGroup>;
+        colNum += 1;
         node.actions.forEach((action) => {
             flattenRecipe(action, matrix, rowNum, colNum);
             rowNum += 1;
         });
+        flattenRecipe(undefined, matrix, rowNum, colNum);
+        matrix[rowNum][colNum] = <TriggerMod trigger={ node } />
     }
     else if (node instanceof BASE_ACTION) {
-        matrix[rowNum][colNum] = <ActionMod action={ node }></ActionMod>
-        colNum += 1;
         matrix[rowNum][colNum] = <Action action={ node }></Action>;
     }
     else {
         matrix[rowNum][colNum] = <div>EMPTY</div>;
     }
+    // if (node instanceof BASE_TRIGGER) {
+    //     matrix.push([<TriggerMod trigger={ node } />])
+    //     flattenRecipe(undefined, matrix, rowNum + 1, colNum + 1);
+    // }
     return matrix;
 }
 
 const Recipe: React.FC<STATE> = ({ recipe }) => {
+    console.log(recipe)
     const matrix = flattenRecipe(recipe);
     const Rows = matrix.map((row, rowNum) => {
         const Cols = row.map((col, colNum) => {
             return <Col key={ colNum }>{ col }</Col>
         });
-        return <Row key={ rowNum }>{ Cols }</Row>;
+        return <Row key={ rowNum } className="align-items-center">{ Cols }</Row>;
     });
-    console.log(matrix);
     return (
         <RecipeWrapper className="sim-recipe">
             { Rows }

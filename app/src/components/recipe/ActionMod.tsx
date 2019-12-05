@@ -9,7 +9,7 @@ const ActionModWrapper = styled.div`
     text-align: center;
     padding: 1em;
     background: #FFDE07;
-    margin-bottom: 1em;
+    margin-bottom: 0;
 `;
 
 interface STATE {
@@ -24,7 +24,7 @@ const ActionMod: React.FC<STATE> = ({ action }) => {
     return (
         <ActionModWrapper>
             <Button variant="outline-primary" onClick={() => { onAddFilter(action) }}>
-                Add Filter
+                +
             </Button>
         </ActionModWrapper>
     );

@@ -6,7 +6,6 @@ import {
     EMAIL,
     COMMIT,
     CALENDAR_EVENT,
-    NONE,
 } from './events_constants';
 import RECIPE from './recipe_constants';
 import { BASE_FILTER } from './filters_constants';
@@ -134,6 +133,20 @@ export class FILTER_GROUP extends SIM_BASE {
         });
         const parentIndex = this.parent.filterGroups.indexOf(this);
         this.parent.updateFilterGroup({ filterGroup: newFilterGroup, atIndex: parentIndex });
+        return newFilterGroup;
+    }
+
+    addFilterGroup({ filterGroup }: { filterGroup: FILTER_GROUP }): FILTER_GROUP {
+        if (!this.parent) {
+            throw new Error('cannot add filter group to filter group without parent');
+        }
+        const FilterGroup = (this.constructor as typeof FILTER_GROUP);
+        const newFilterGroup = new FilterGroup({
+            parent: this.parent,
+            filterGroups: [...this.filterGroups, filterGroup],
+        });
+        const atIndex = this.parent.filterGroups.indexOf(this);
+        this.parent.updateFilterGroup({ filterGroup: newFilterGroup, atIndex });
         return newFilterGroup;
     }
 }

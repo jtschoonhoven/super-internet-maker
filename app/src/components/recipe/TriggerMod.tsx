@@ -11,19 +11,19 @@ const TriggerModWrapper = styled.div`
 `;
 
 interface STATE {
-  trigger: BASE_TRIGGER;
+  trigger: BASE_TRIGGER | FILTER_GROUP;
 }
 
-function onAddFilterGroup(trigger: BASE_TRIGGER): void {
-  const filterGroup = new FILTER_GROUP({ parent: trigger, operator: 'and' });
-  trigger.addFilterGroup({ filterGroup });
+function onAddFilterGroup(parent: BASE_TRIGGER | FILTER_GROUP): void {
+  const filterGroup = new FILTER_GROUP({ parent: parent, operator: 'and' });
+  parent.addFilterGroup({ filterGroup });
 }
 
 const TriggerMod: React.FC<STATE> = ({ trigger }) => {
   return (
     <TriggerModWrapper>
       <Button variant="outline-primary" onClick={ () => { onAddFilterGroup(trigger) } }>
-        Add Filter Group
+        +
       </Button>
     </TriggerModWrapper>
   );
