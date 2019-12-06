@@ -5,6 +5,7 @@ import IngredientWrapper from './IngredientWrapper';
 import FilterGroupList from './FilterGroupList';
 import { FILTER_GROUP } from '../../constants';
 
+const FilterGroupWrapper = styled.div``;
 
 interface STATE {
     filterGroup: FILTER_GROUP;
@@ -12,9 +13,10 @@ interface STATE {
 
 const FilterGroup: React.FC<STATE> = ({ filterGroup }) => {
     return (
-        <IngredientWrapper label="A list">
+        <FilterGroupWrapper>
+            <IngredientWrapper label="Filter group" ingredient={ filterGroup }></IngredientWrapper>
             <FilterGroupList filterGroup={ filterGroup } />
-        </IngredientWrapper>
+        </FilterGroupWrapper>
     );
     // let Condition = null;
     // if (filterGroup.filters.length) {

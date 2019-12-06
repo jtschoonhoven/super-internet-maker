@@ -1,6 +1,6 @@
 import uuidv4 from 'uuid/v4';
 import isPlainObject from 'lodash/isPlainObject';
-import { BASE_TRIGGER } from '.';
+import { BASE_TRIGGER, RECIPE } from '.';
 
 
 const MAX_RECURSION_DEPTH = 999;
@@ -14,11 +14,16 @@ export default abstract class SIM_BASE {
         this._uuid = uuidv4();
     }
 
+    /**
+     * Hackily return any child nodes that have this instance as their parent.
+     */
     getChildren(): SIM_BASE[] {
-        // hackily return any child nodes that have this instance as their parent
         const children: SIM_BASE[] = [];
         Object.entries(this).forEach(([propName, child]) => {
             if (propName === 'parent') {
+                return;
+            }
+            else if (propName === 'selectedIngredient') {
                 return;
             }
             else if (child instanceof SIM_BASE) {
@@ -28,8 +33,10 @@ export default abstract class SIM_BASE {
         return children;
     }
 
+    /**
+     * Hackily return any nested child nodes that have this instance as their parent
+     */
     getGrandChildren(): SIM_BASE[][] {
-        // hackily return any nested child nodes that have this instance as their parent
         const grandChildren: SIM_BASE[][] = [];
         Object.entries(this).forEach(([propName, child]) => {
             if (child instanceof Array) {
@@ -54,6 +61,9 @@ export default abstract class SIM_BASE {
         return grandChildren;
     }
 
+    /**
+     * Return the parent trigger of this ingredient.
+     */
     getParentTrigger(): BASE_TRIGGER {
         if (this instanceof BASE_TRIGGER) {
             return this;
@@ -71,6 +81,27 @@ export default abstract class SIM_BASE {
         throw new Error(`failed to find trigger in any parent of ${ this }`);
     }
 
+    /**
+     * Return the parent recipe of this ingredient.
+     */
+    getParentRecipe(): RECIPE {
+        const trigger = this.getParentTrigger();
+        if (!trigger.parent) {
+            throw new Error(`Failed to find recipe in any parent of ${ this }`);
+        }
+        return trigger.parent;
+    }
+
+    /**
+     * Set this ingredient as the current selected ingredient.
+     */
+    setSelectedIngredient(): void {
+        this.getParentRecipe().updateSelectedIngredient(this);
+    }
+
+    /**
+     * Ensure that all children of this ingredient have the correct parent prop.
+     */
     ensureLineage(): void {
         // hackily update the parent prop on any children (including collections of children)
         const children = this.getChildren();

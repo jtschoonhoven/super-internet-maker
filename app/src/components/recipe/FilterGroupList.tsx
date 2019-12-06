@@ -14,7 +14,7 @@ const FilterGroupList: React.FC<STATE> = ({ filterGroup }) => {
     // });
     const Operator = filterGroup.filters.length ? filterGroup.operator : null;
     return (
-        <IngredientWrapper label="label">
+        <IngredientWrapper label="Filter Group List" ingredient={ filterGroup }>
             {/* { Operator }
             { Filters }
             <FilterSelector filterGroup={ filterGroup } /> */}

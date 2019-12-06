@@ -5,6 +5,8 @@ import FilterGroup from './FilterGroup';
 import IngredientWrapper from './IngredientWrapper';
 import { RECIPE } from '../../constants';
 
+const TriggerWrapper = styled.div``;
+
 interface Props {
   recipe: RECIPE;
 }
@@ -24,9 +26,10 @@ const Trigger: React.FC<Props> = ({ recipe }) => {
   }
   const label = `Trigger: ${ trigger ? trigger.displayName : 'Select a trigger' }`;
   return (
-    <IngredientWrapper label={ label }>
+    <TriggerWrapper>
+      <IngredientWrapper label={ label } ingredient={ recipe }></IngredientWrapper>
       { FilterGroups }
-    </IngredientWrapper>
+    </TriggerWrapper>
   );
   // return (
   //   <TriggerWrapper>

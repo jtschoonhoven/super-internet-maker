@@ -12,18 +12,15 @@ import { SIM_BASE } from '../constants';
 
 interface STORE {
     recipe: RECIPE;
-    selectedIngredient: SIM_BASE;
 }
 
 const _initialRecipe = new RECIPE({});
 const STORE = {
     recipe: _initialRecipe,
-    selectedIngredient: _initialRecipe,
 };
 
-const App: React.FC = () => {
+const App: React.FC<{}> = () => {
     const [recipe, setRecipeState] = useState<RECIPE>(STORE.recipe);
-    const [selectedIngredient, setSelectedIngredient] = useState<SIM_BASE>(STORE.selectedIngredient);
     recipe.onUpdate = (newRecipe: RECIPE) => {
         STORE.recipe = newRecipe;
         setRecipeState(STORE.recipe);
@@ -32,7 +29,9 @@ const App: React.FC = () => {
         <Container fluid={ true } className="App">
             <Row>
                 <Col xs="12" sm="6"><Recipe recipe={ recipe } /></Col>
-                <Col xs="12" sm="6"><RecipeEditor selectedIngredient={ selectedIngredient }></RecipeEditor></Col>
+                <Col xs="12" sm="6">
+                    <RecipeEditor selectedIngredient={ recipe.selectedIngredient }>
+                </RecipeEditor></Col>
             </Row>
         </Container>
     );
