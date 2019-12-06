@@ -9,10 +9,16 @@ const MAX_RECURSION_DEPTH = 999;
 export default abstract class SIM_BASE {
     abstract parent?: SIM_BASE;
     readonly _uuid: string;
+    readonly isExpanded: boolean = false;
 
     constructor() {
         this._uuid = uuidv4();
     }
+
+    /**
+     * Toggle the isExpanded boolean property.
+     */
+    abstract toggleIsExpanded(): void;
 
     /**
      * Hackily return any child nodes that have this instance as their parent.

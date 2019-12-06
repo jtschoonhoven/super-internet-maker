@@ -56,4 +56,8 @@ export default class RECIPE extends SIM_BASE implements _RECIPE {
             this.onUpdate(newRecipe);
         }
     }
+
+    toggleIsExpanded(): never {
+        throw new Error('Recipe can not be expanded.');
+    }
 }

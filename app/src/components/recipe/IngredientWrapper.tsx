@@ -26,9 +26,9 @@ const IngredientWrapper: React.FC<Props> = ({ label, ingredient, children }) => 
     return (
         <IngredientWrapperStyle>
             <LabelWrapper onClick={ () => ingredient && ingredient.setSelectedIngredient() }>
-                { label }
+                <span onClick={} >▷</span> { label }
             </LabelWrapper>
-            { children }
+            { ingredient.isExpanded ? children : null }
         </IngredientWrapperStyle>
     );
 };

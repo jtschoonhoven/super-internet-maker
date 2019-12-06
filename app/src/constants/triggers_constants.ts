@@ -12,144 +12,170 @@ import { BASE_FILTER } from './filters_constants';
 import { BASE_FIELD } from './fields_constants';
 import { BASE_ACTION, ACTION_NONE } from './actions_constants';
 import { SIM_BASE } from '.';
+import { on } from 'cluster';
 
 
 const TRIGGERS: { [name: string]: typeof BASE_TRIGGER } = {};
 export default TRIGGERS;
 
-export class TRIGGER_FILTER extends SIM_BASE {
+interface _TRIGGER_FILTER {
     parent?: FILTER_GROUP;
     readonly type: BASE_FILTER;
     readonly onField: typeof BASE_FIELD;
+    readonly isExpanded: boolean;
+}
 
-    constructor(
-        { type, onField, parent }:
-        {
-            type: BASE_FILTER,
-            onField: typeof BASE_FIELD,
-            parent?: FILTER_GROUP,
-        },
-    ) {
+/**
+ * A single filter on a single field.
+ */
+export class TRIGGER_FILTER extends SIM_BASE implements _TRIGGER_FILTER {
+    parent?: FILTER_GROUP;
+    readonly type: BASE_FILTER;
+    readonly onField: typeof BASE_FIELD;
+    readonly isExpanded: boolean;
+
+    constructor(props: _TRIGGER_FILTER) {
         super();
-        this.type = type;
-        this.onField = onField;
-        this.parent = parent;
+        this.type = props.type;
+        this.onField = props.onField;
+        this.parent = props.parent;
+        this.isExpanded = props.isExpanded || false;
+    }
+
+    /**
+     * Replace this instance with a new instance with one or more updated properties.
+     * Cascades updates up the chain.
+     */
+    updateProperties(props: Partial<_TRIGGER_FILTER>): void {
+        if (!this.parent) {
+            throw new Error('Cannot update trigger filter without a parent');
+        }
+        const filter = new TRIGGER_FILTER({
+            type: props.type || this.type,
+            onField: props.onField || this.onField,
+            parent: props.parent || this.parent,
+            isExpanded: typeof props.isExpanded === 'boolean' ? props.isExpanded : this.isExpanded,
+        });
+        const atIndex = this.parent.filters.indexOf(this);
+        this.parent.updateFilter({ filter, atIndex });
+    }
+
+    /**
+     * Toggles the "isExpanded" boolean prop.
+     */
+    toggleIsExpanded(): void {
+        this.updateProperties({ isExpanded: !this.isExpanded });
     }
 }
 
-export class FILTER_GROUP extends SIM_BASE {
+interface _FILTER_GROUP {
     parent?: BASE_TRIGGER | FILTER_GROUP;
     readonly operator: 'and' | 'or';
     readonly filters: TRIGGER_FILTER[];
     readonly actions: BASE_ACTION[];
     readonly filterGroups: FILTER_GROUP[];
     readonly filterGroupElse?: FILTER_GROUP;
+    readonly isExpanded: boolean;
+}
 
-    constructor(
-        { parent, operator, filters, actions, filterGroups, filterGroupElse }:
-        {
-            parent?: BASE_TRIGGER | FILTER_GROUP;
-            operator?: 'and' | 'or';
-            filters?: TRIGGER_FILTER[];
-            actions?: BASE_ACTION[];
-            filterGroups?: FILTER_GROUP[];
-            filterGroupElse?: FILTER_GROUP;
-        },
-    ) {
+/**
+ * A collection of actions and child filtergroups to activate if all filters in this group are true.
+ */
+export class FILTER_GROUP extends SIM_BASE implements _FILTER_GROUP {
+    parent?: BASE_TRIGGER | FILTER_GROUP;
+    readonly operator: 'and' | 'or';
+    readonly filters: TRIGGER_FILTER[];
+    readonly actions: BASE_ACTION[];
+    readonly filterGroups: FILTER_GROUP[];
+    readonly filterGroupElse?: FILTER_GROUP;
+    readonly isExpanded: boolean;
+
+    constructor(props: Partial<_FILTER_GROUP>) {
         super();
-        this.parent = parent;
-        this.operator = operator || 'and';
-        this.filters = filters || [];
-        this.actions = actions || [new ACTION_NONE({})];
-        this.filterGroups = filterGroups || [];
-        this.filterGroupElse = filterGroupElse;
+        this.parent = props.parent;
+        this.operator = props.operator || 'and';
+        this.filters = props.filters || [];
+        this.actions = props.actions || [new ACTION_NONE({})];
+        this.filterGroups = props.filterGroups || [];
+        this.filterGroupElse = props.filterGroupElse;
+        this.isExpanded = props.isExpanded || false;
     }
 
     addFilter({ filter }: { filter: TRIGGER_FILTER }): FILTER_GROUP {
-        if (!this.parent) {
-            throw new Error('cannot add filter to filter group without a parent');
-        }
-        const newFilterGroup = new FILTER_GROUP({
-            filters: [...this.filters, filter],
-            actions: this.actions,
-            filterGroups: this.filterGroups,
-            operator: this.operator,
-            parent: this.parent,
-        });
-        return this.replaceWith({ filterGroup: newFilterGroup });
+        const newFilters = [...this.filters, filter];
+        return this.updateProperties({ filters: newFilters });
+    }
+
+    /**
+     * Replace the current TRIGGER_FILTER at the given index with the one provided and cascade updates.
+     */
+    updateFilter({ filter, atIndex }: { filter: TRIGGER_FILTER, atIndex: number }): FILTER_GROUP {
+        const newFilters = [...this.filters];
+        newFilters[atIndex] = filter;
+        return this.updateProperties({ filters: newFilters });
     }
 
     addAction({ action }: { action: BASE_ACTION }): FILTER_GROUP {
-        if (!this.parent) {
-            throw new Error('cannot add action to filter group without a parent');
-        }
-        const newFilterGroup = new FILTER_GROUP({
-            filters:this.filters,
-            actions: [...this.actions, action],
-            filterGroups: this.filterGroups,
-            operator: this.operator,
-            parent: this.parent,
-        });
-        return this.replaceWith({ filterGroup: newFilterGroup });
+        const newActions = [...this.actions, action];
+        return this.updateProperties({ actions: newActions });
     }
 
     updateAction({ action, atIndex }: { action: BASE_ACTION, atIndex: number }): FILTER_GROUP {
-        if (!this.parent) {
-            throw new Error('cannot update action on filter group without a parent');
-        }
         const newActions = [...this.actions];
         newActions[atIndex] = action;
-        const newFilterGroup = new FILTER_GROUP({
-            filters: this.filters,
-            actions: newActions,
-            filterGroups: this.filterGroups,
-            operator: this.operator,
-            parent: this.parent,
-        });
-        return this.replaceWith({ filterGroup: newFilterGroup });
+        return this.updateProperties({ actions: newActions });
     }
 
-    replaceWith({ filterGroup }: { filterGroup: FILTER_GROUP }): FILTER_GROUP {
-        if (!this.parent) {
-            throw new Error('cannot replace filter group without a parent');
-        }
-        const atIndex = this.parent.filterGroups.indexOf(this);
-        this.parent.updateFilterGroup({ filterGroup, atIndex });
-        return filterGroup;
-    }
+    // replaceWith({ filterGroup }: { filterGroup: FILTER_GROUP }): FILTER_GROUP {
+    //     if (!this.parent) {
+    //         throw new Error('cannot replace filter group without a parent');
+    //     }
+    //     const atIndex = this.parent.filterGroups.indexOf(this);
+    //     this.parent.updateFilterGroup({ filterGroup, atIndex });
+    //     return filterGroup;
+    // }
 
     updateFilterGroup({ filterGroup, atIndex }: { filterGroup: FILTER_GROUP, atIndex: number }): FILTER_GROUP {
-        if (!this.parent) {
-            throw new Error('cannot update filter group without a parent');
-        }
         const newFilterGroups = [...this.filterGroups];
         newFilterGroups[atIndex] = filterGroup;
-        const newFilterGroup = new FILTER_GROUP({
-            filters: this.filters,
-            actions: this.actions,
-            filterGroups: newFilterGroups,
-            operator: this.operator,
-            parent: this.parent,
-        });
-        const parentIndex = this.parent.filterGroups.indexOf(this);
-        this.parent.updateFilterGroup({ filterGroup: newFilterGroup, atIndex: parentIndex });
-        return newFilterGroup;
+        return this.updateProperties({ filterGroups: newFilterGroups });
     }
 
     addFilterGroup({ filterGroup }: { filterGroup: FILTER_GROUP }): FILTER_GROUP {
+        const newFilterGroups = [...this.filterGroups, filterGroup];
+        return this.updateProperties({ filterGroups: newFilterGroups });
+    }
+
+    /**
+     * Update one or more properties on this FILTER GROUP instance and return a new one.
+     * Changes cascade up the chain.
+     */
+    updateProperties(props: Partial<_FILTER_GROUP>): FILTER_GROUP {
         if (!this.parent) {
-            throw new Error('cannot add filter group to filter group without parent');
+            throw new Error('cannot update filter group properties without a parent');
         }
-        const FilterGroup = (this.constructor as typeof FILTER_GROUP);
-        const newFilterGroup = new FilterGroup({
-            parent: this.parent,
-            filterGroups: [...this.filterGroups, filterGroup],
+        const newFilterGroup = new FILTER_GROUP({
+            parent: props.parent || this.parent,
+            operator: props.operator || this.operator,
+            filters: props.filters || this.filters,
+            actions: props.actions || this.actions,
+            filterGroups: props.filterGroups || this.filterGroups,
+            filterGroupElse: props.filterGroupElse || this.filterGroupElse,
+            isExpanded: typeof props.isExpanded === 'boolean' ? props.isExpanded : this.isExpanded,
         });
         const atIndex = this.parent.filterGroups.indexOf(this);
         this.parent.updateFilterGroup({ filterGroup: newFilterGroup, atIndex });
         return newFilterGroup;
     }
+
+    /**
+     * Toggles the "isExpanded" boolean prop.
+     */
+    toggleIsExpanded(): void {
+        this.updateProperties({ isExpanded: !this.isExpanded });
+    }
 }
+
 
 interface _BASE_TRIGGER {
     parent?: RECIPE;
@@ -157,10 +183,10 @@ interface _BASE_TRIGGER {
     readonly displayName: string;
     readonly type: typeof BASE_EVENT;
     readonly filterGroups: FILTER_GROUP[];
+    readonly isExpanded: boolean;
 }
 
 export class BASE_TRIGGER extends SIM_BASE implements _BASE_TRIGGER {
-    parent?: RECIPE;
     static readonly label: string;
     static readonly displayName: string;
     static readonly type: typeof BASE_EVENT;
@@ -170,11 +196,13 @@ export class BASE_TRIGGER extends SIM_BASE implements _BASE_TRIGGER {
     readonly type: typeof BASE_EVENT;
     // instance-only props
     readonly filterGroups: FILTER_GROUP[];
+    readonly isExpanded: boolean;
+    parent?: RECIPE;
 
     // assign instance props from static props
     constructor(
-        { parent, filterGroups }:
-        { parent?: RECIPE, filterGroups?: FILTER_GROUP[] },
+        { parent, filterGroups, isExpanded }:
+        { parent?: RECIPE, filterGroups?: FILTER_GROUP[], isExpanded?: boolean },
     ) {
         super();
         this.label = (this.constructor as typeof BASE_TRIGGER).label;
@@ -182,6 +210,19 @@ export class BASE_TRIGGER extends SIM_BASE implements _BASE_TRIGGER {
         this.type = (this.constructor as typeof BASE_TRIGGER).type;
         this.parent = parent;
         this.filterGroups = filterGroups || [new FILTER_GROUP({})];
+        this.isExpanded = isExpanded || false;
+    }
+
+    updateProperties(props: { parent?: RECIPE, filterGroups?: FILTER_GROUP[], isExpanded?: boolean }): BASE_TRIGGER {
+        if (!this.parent) {
+            throw new Error('cannot update properties on trigger trigger without parent');
+        }
+        const Trigger = (this.constructor as typeof BASE_TRIGGER);
+        const newTrigger = new Trigger({
+            parent: props.parent || this.parent,
+            filterGroups: props.filterGroups || this.filterGroups,
+            isExpanded: props.isExpanded || this.isExpanded,
+        });
     }
 
     addFilterGroup({ filterGroup }: { filterGroup: FILTER_GROUP }): BASE_TRIGGER {
