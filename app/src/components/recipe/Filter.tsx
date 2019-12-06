@@ -1,13 +1,8 @@
 import React from 'react';
-import styled from 'styled-components';
+import IngredientWrapper from './IngredientWrapper';
 
-import { TRIGGER_FILTER, FILTER_GROUP } from '../../constants/triggers_constants';
+import { TRIGGER_FILTER, FILTER_GROUP } from '../../constants';
 
-const FilterWrapper = styled.div`
-    margin-bottom: 1em;
-    padding: 1em;
-    background: #FF5459;
-`;
 
 interface STATE {
     filter: TRIGGER_FILTER | FILTER_GROUP;
@@ -15,13 +10,10 @@ interface STATE {
 
 const Filter: React.FC<STATE> = ({ filter }) => {
     if (filter instanceof TRIGGER_FILTER) {
+        const label = `i is a filter on ${ filter.onField.displayName } of type ${ filter.type.displayName }`;
         return (
-            <FilterWrapper>
-                <p>
-                    i is a filter on { filter.onField.displayName }
-                    of type { filter.type.displayName }
-                </p>
-            </FilterWrapper>
+            <IngredientWrapper label={ label } ingredient={ filter }>
+            </IngredientWrapper>
         );
     }
     else {

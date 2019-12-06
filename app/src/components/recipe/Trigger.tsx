@@ -27,8 +27,9 @@ const Trigger: React.FC<Props> = ({ recipe }) => {
   const label = `Trigger: ${ trigger ? trigger.displayName : 'Select a trigger' }`;
   return (
     <TriggerWrapper>
-      <IngredientWrapper label={ label } ingredient={ recipe }></IngredientWrapper>
-      { FilterGroups }
+      <IngredientWrapper label={ label } ingredient={ recipe }>
+        { FilterGroups }
+      </IngredientWrapper>
     </TriggerWrapper>
   );
   // return (

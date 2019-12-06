@@ -6,30 +6,27 @@ import { SIM_BASE } from '../../constants';
 
 const IngredientWrapperStyle = styled.div`
     padding-left: 1em;
+    background: #000000;
 `;
 
 const LabelWrapper = styled.div`
     padding-left: 0.5em;
-    margin-top: 1em;
+    margin-bottom: 2px;
     background: #334455;
     color: #FAFAFA;
 `;
 
 interface Props {
     label: string;
-    ingredient?: SIM_BASE;
-    children?: React.ReactElement | React.ReactElement[];
+    ingredient: SIM_BASE;
+    children?: React.ReactNode;
 };
 
-const IngredientWrapper: React.FC<Props> = ({
-    label,
-    ingredient,
-    children,
-}) => {
+const IngredientWrapper: React.FC<Props> = ({ label, ingredient, children }) => {
     return (
         <IngredientWrapperStyle>
             <LabelWrapper onClick={ () => ingredient && ingredient.setSelectedIngredient() }>
-                <p>{ label }</p>
+                { label }
             </LabelWrapper>
             { children }
         </IngredientWrapperStyle>

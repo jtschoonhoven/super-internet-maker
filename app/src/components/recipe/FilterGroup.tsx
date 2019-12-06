@@ -14,8 +14,9 @@ interface STATE {
 const FilterGroup: React.FC<STATE> = ({ filterGroup }) => {
     return (
         <FilterGroupWrapper>
-            <IngredientWrapper label="Filter group" ingredient={ filterGroup }></IngredientWrapper>
-            <FilterGroupList filterGroup={ filterGroup } />
+            <IngredientWrapper label="Filter Group Collection" ingredient={ filterGroup }>
+                <FilterGroupList filterGroup={ filterGroup } />
+            </IngredientWrapper>
         </FilterGroupWrapper>
     );
     // let Condition = null;
